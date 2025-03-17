@@ -1,0 +1,1 @@
+// Yleiset funktiot, kuten teosten haku ja synkronointi.

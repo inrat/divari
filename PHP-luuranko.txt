@@ -1,0 +1,31 @@
+/divari
+│
+├── /config
+│   └── config.php            # Tietokanta-yhteysasetukset
+│
+├── /functions
+│   └── functions.php         # Yleiset toiminnot (hakutoiminnat, synkronointi jne.)
+│
+├── /public
+│   ├── index.php             # Etusivu (kirjautuminen, haku, jne.)
+│   ├── search.php            # Hakutulosten näyttö
+│   ├── admin.php             # Admin-hallinta (esim. synkronointi)
+│
+└── /templates
+    ├── header.php            # Yhteinen yläpalkki HTML-sivuille
+    ├── footer.php            # Yhteinen alatunniste HTML-sivuille
+
+
+1. /config
+config.php sisältää kaikki yhteydet ja asetukset, jotka liittyvät tietokantaan. Tällä tavalla varmistetaan, että tietokannan asetukset eivät ole hajallaan eri tiedostoissa, vaan kaikki on keskitetty yhteen paikkaan.
+
+2. /functions
+functions.php-tiedostossa pidetään kaikki yleiset toiminnot, kuten hakutoiminnot ja mahdolliset synkronointifunktiot. Tämä selkeyttää projektin rakennetta ja pitää toiminnot erillään muista tiedostoista, kuten käyttöliittymästä.
+
+3. /public
+index.php on se, mitä käyttäjä näkee ensimmäisenä. Se voi olla myös kirjautumissivusto ja mahdollisesti myös hakutoiminto.
+search.php toimii hakutulosten näyttämiseen, ja se voi kutsua functions.php-tiedoston hakutoimintoa.
+admin.php on tarkoitettu vain hallinnoille ja mahdollisesti synkronoinnille keskusdivarin kanssa. Tämä voi sisältää hallintapaneelin toiminnot, jotka koskevat teosten hallintaa.
+
+4. /templates
+header.php ja footer.php sisältävät HTML-pohjat, jotka toistuvat kaikilla sivuilla. Näin koodia ei tarvitse toistaa joka kerta erikseen jokaisessa PHP-tiedostossa, vaan nämä tiedostot sisällytetään mihin tahansa sivulle. Tämä tekee koodista helpommin ylläpidettävän.
