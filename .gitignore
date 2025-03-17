@@ -1,0 +1,32 @@
+# Yleiset PHP-projektitiedostot
+vendor/
+composer.lock
+composer.phar
+
+# Palvelimen ympäristömuuttujat ja asetustiedostot
+.env
+*.env.*
+config.php
+database.php
+
+# PostgreSQL-tietokantadumpit ja muut tietokantaan liittyvät tiedostot
+*.sql
+*.sqlite
+*.pgsql
+dump.sql
+
+# Käyttäjäkohtaiset tiedostot
+*.log
+*.cache
+*.bak
+*.swp
+*.swo
+
+# IDE:n ja editorien luomat tiedostot
+.vscode/
+.idea/
+*.iml
+
+# Yliopiston palvelinympäristöön liittyvät mahdolliset tiedostot
+.DS_Store
+Thumbs.db
