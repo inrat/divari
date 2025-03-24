@@ -8,7 +8,12 @@
 </head>
 <body>
     <h2>Kirjaudu sisään</h2>
-    <?php if (isset($_SESSION['message'])) { echo "<p>" . $_SESSION['message'] . "</p>"; unset($_SESSION['message']); } ?>
+    <?php 
+    // Näytetään mahdollinen rekisteröinti-ilmoitus
+    if (isset($_SESSION['message'])) { 
+        echo "<p>" . $_SESSION['message'] . "</p>"; 
+        unset($_SESSION['message']); } ?>
+
     <form action="login.php" method="POST">
         <label for="email">Sähköposti:</label>
         <input type="email" name="email" required>

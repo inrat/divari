@@ -1,13 +1,7 @@
+// Rekisteröinti 
 <?php
 session_start();
-
-// Yhteysasetukset tietokantaan (käyttäjän omat tunnukset)
-$y_tiedot = "dbname=hcmape user=hcmape password=salasana_täytyy_asettaa";
-$db = pg_connect($y_tiedot);
-
-if (!$db) {
-    die("Tietokantayhteyden luominen epäonnistui: " . pg_last_error());
-}
+require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Hae lomakkeen tiedot
@@ -29,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = pg_query($db, $sql);
         if ($result) {
             $_SESSION['message'] = "Rekisteröinti onnistui! Voit nyt kirjautua sisään.";
-            header("Location: login.php");
+            header("Location: index.php");
             exit();
         } else {
             $_SESSION['message'] = "Tietokantavirhe: " . pg_last_error($db);
