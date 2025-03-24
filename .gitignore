@@ -9,12 +9,6 @@ composer.phar
 config.php
 database.php
 
-# PostgreSQL-tietokantadumpit ja muut tietokantaan liittyvät tiedostot
-*.sql
-*.sqlite
-*.pgsql
-dump.sql
-
 # Käyttäjäkohtaiset tiedostot
 *.log
 *.cache
