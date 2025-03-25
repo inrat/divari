@@ -1,7 +1,7 @@
 // Login
 <?php
 session_start();
-require_once 'config.php'; // Yhdistetään tietokantaan
+require_once __DIR__ . '/../config/config.php'; // Yhdistetään tietokantaan
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
