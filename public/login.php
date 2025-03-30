@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (password_verify($password, $row['salasana'])) {
             $_SESSION['user_id'] = $row['asiakas_id'];
             $_SESSION['message'] = "Kirjautuminen onnistui!";
-            header("Location: index.php");
+            header("Location: home.php");
             exit();
         } else {
             $_SESSION['message'] = "Virheellinen salasana.";
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['message'] = "Sähköpostia ei löydy.";
     }
 
-    header("Location: index.php");
+    header("Location: home.php");
     exit();
 }
 ?>
