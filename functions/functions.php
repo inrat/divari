@@ -16,11 +16,13 @@ function hae_kirjat($query, $db) {
         return [];
     }
 
-    $sql = "SELECT tekija, nimi, tyyppi, luokka FROM teokset 
-            WHERE LOWER(tekija) LIKE LOWER('%$query%')
-            OR LOWER(nimi) LIKE LOWER('%$query%')
-            OR LOWER(tyyppi) LIKE LOWER('%$query%')
-            OR LOWER(luokka) LIKE LOWER('%$query%')";
+    $sql = "SELECT t.tekija, t.nimi, t.tyyppi, t.luokka, t.isbn, n.hinta, n.tila 
+            FROM teokset t
+            JOIN nide n ON t.teos_id = n.teos_id
+            WHERE LOWER(t.tekija) LIKE LOWER('%$query%')
+            OR LOWER(t.nimi) LIKE LOWER('%$query%')
+            OR LOWER(t.tyyppi) LIKE LOWER('%$query%')
+            OR LOWER(t.luokka) LIKE LOWER('%$query%')";
 
     $result = pg_query($db, $sql);
 

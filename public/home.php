@@ -57,9 +57,13 @@ require_once __DIR__ . '/../functions/functions.php'; // Funktiot käyttöön
                         echo "Tekijä: " . htmlspecialchars($book['tekija']) . "<br>";
                         echo "Tyyppi: " . htmlspecialchars($book['tyyppi']) . "<br>";
                         echo "Luokka: " . htmlspecialchars($book['luokka']) . "<br>";
+                        echo "ISBN: " . htmlspecialchars($book['isbn']) . "<br>";
+                        echo "Hinta: " . number_format($book['hinta'], 2, ',', ' ') . " €<br>";
+                        echo "Tila: " . htmlspecialchars($book['tila']) . "<br>";
                         echo "</div>";
                     }
-                } else {
+                }
+                 else {
                     echo "<p>Ei tuloksia haulla <strong>" . htmlspecialchars($query) . "</strong>.</p>";
                 }
             }
