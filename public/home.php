@@ -1,7 +1,8 @@
 <!-- home.php -->
 <?php
 session_start();
-// Varmista, että käyttäjä on kirjautunut. (Tätä voisi laajentaa autentikoinnilla.)
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../functions/functions.php'; // Funktiot käyttöön
 ?>
 <!DOCTYPE html>
 <html>
@@ -40,38 +41,32 @@ session_start();
     </form>
     <div id="results">
         <?php
-        // Simuloitu kirjatietojen lista. Oikeassa sovelluksessa nämä tiedot haetaan tietokannasta.
-        $books = [
-            ['title' => 'Corto Maltese Etelämerellä', 'author' => 'Hugo Pratt', 'type' => 'Sarjakuva', 'category' => 'Seikkailu'],
-            ['title' => 'Maltese Falcon', 'author' => 'Dashiell Hammett', 'type' => 'Romaani', 'category' => 'Sikailu'],
-            ['title' => 'Maltese Mystery', 'author' => 'Some Author', 'type' => 'Kuvakirja', 'category' => 'Romantiikka']
-        ];
-
         if (isset($_GET['q'])) {
             $query = trim($_GET['q']);
-            if (!empty($query)) {
-                echo "<h3>Hakutulokset:</h3>";
-                $found = false;
-                foreach ($books as $book) {
-                    // Haetaan hakusana kaikista kentistä (osittainen täsmäys, case-insensitive)
-                    if (stripos($book['title'], $query) !== false ||
-                        stripos($book['author'], $query) !== false ||
-                        stripos($book['type'], $query) !== false ||
-                        stripos($book['category'], $query) !== false) {
+
+            if (strlen($query) < 3) {
+                echo "<p>Hakusanan on oltava vähintään 3 merkkiä pitkä.</p>";
+            } else {
+                $results = hae_kirjat($query, $db); // Käytetään funktiota hakemiseen
+
+                if ($results) {
+                    echo "<h3>Hakutulokset:</h3>";
+                    foreach ($results as $book) {
                         echo "<div class='result-item'>";
-                        echo "<strong>" . htmlspecialchars($book['title']) . "</strong><br>";
-                        echo "Tekijä: " . htmlspecialchars($book['author']) . "<br>";
-                        echo "Tyyppi: " . htmlspecialchars($book['type']) . "<br>";
-                        echo "Luokka: " . htmlspecialchars($book['category']) . "<br>";
+                        echo "<strong>" . htmlspecialchars($book['nimi']) . "</strong><br>";
+                        echo "Tekijä: " . htmlspecialchars($book['tekija']) . "<br>";
+                        echo "Tyyppi: " . htmlspecialchars($book['tyyppi']) . "<br>";
+                        echo "Luokka: " . htmlspecialchars($book['luokka']) . "<br>";
+                        echo "ISBN: " . htmlspecialchars($book['isbn']) . "<br>";
+                        echo "Hinta: " . number_format($book['hinta'], 2, ',', ' ') . " €<br>";
+                        echo "Tila: " . htmlspecialchars($book['tila']) . "<br>";
+                        echo "Divari: " . htmlspecialchars($book['divari_nimi']) . "<br>";
                         echo "</div>";
-                        $found = true;
                     }
                 }
-                if (!$found) {
+                 else {
                     echo "<p>Ei tuloksia haulla <strong>" . htmlspecialchars($query) . "</strong>.</p>";
                 }
-            } else {
-                echo "<p>Anna hakusana.</p>";
             }
         }
         ?>
