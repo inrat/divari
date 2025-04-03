@@ -5,6 +5,14 @@
     <title>Rekisteröidy</title>
 </head>
 <body>
+    <?php
+    session_start();
+    if (isset($_SESSION['message'])) {
+        echo "<p style='color: red; font-weight: bold;'>" . htmlspecialchars($_SESSION['message']) . "</p>";
+        unset($_SESSION['message']); // estää viestiä näkymästä uudelleen
+    }
+    ?>
+
     <h2>Rekisteröidy</h2>
     <form action="register_process.php" method="POST">
         <label for="name">Nimi:</label>
@@ -26,3 +34,4 @@
     </form>
 </body>
 </html>
+

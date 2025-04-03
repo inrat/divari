@@ -15,12 +15,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
     try {
-        // Valmistellaan SQL-lause
-        $sql = "INSERT INTO asiakas (nimi, email, salasana, osoite, puhelinnumero) 
-                VALUES ('$name', '$email', '$passwordHash', '$address', '$phone')";
+        // Tarkistetaan, onko sähköposti jo käytössä
+        $checkSql = "SELECT * FROM asiakas WHERE email = $1";
+        $checkResult = pg_query_params($db, $checkSql, array($email));
 
-        // Suoritetaan SQL-lause
-        $result = pg_query($db, $sql);
+        if (pg_num_rows($checkResult) > 0) {
+            $_SESSION['message'] = "Sähköpostiosoite on jo rekisteröity. Käytä toista sähköpostia.";
+            header("Location: register.php");
+            exit();
+        }
+
+        // Jos sähköposti ei ole käytössä, jatketaan rekisteröintiä
+        $sql = "INSERT INTO asiakas (nimi, email, salasana, osoite, puhelinnumero) 
+                VALUES ($1, $2, $3, $4, $5)";
+        $params = array($name, $email, $passwordHash, $address, $phone);
+        $result = pg_query_params($db, $sql, $params);
+
         if ($result) {
             $_SESSION['message'] = "Rekisteröinti onnistui! Voit nyt kirjautua sisään.";
             header("Location: index.php");
