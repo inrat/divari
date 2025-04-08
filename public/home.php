@@ -53,20 +53,18 @@ require_once __DIR__ . '/../functions/functions.php'; // Funktiot käyttöön
                     echo "<h3>Hakutulokset:</h3>";
                     foreach ($results as $book) {
                         echo "<div class='result-item'>";
-                        echo "<strong>" . htmlspecialchars($book['nimi']) . "</strong><br>";
+                        echo "<a href='search.php?tekija=" . urlencode($book['tekija']) . "&nimi=" . urlencode($book['nimi']) . "'>";
+                        echo "<strong>" . htmlspecialchars($book['nimi']) . "</strong>";
+                        echo "</a><br>";
                         echo "Tekijä: " . htmlspecialchars($book['tekija']) . "<br>";
                         echo "Tyyppi: " . htmlspecialchars($book['tyyppi']) . "<br>";
                         echo "Luokka: " . htmlspecialchars($book['luokka']) . "<br>";
-                        echo "ISBN: " . htmlspecialchars($book['isbn']) . "<br>";
-                        echo "Hinta: " . number_format($book['hinta'], 2, ',', ' ') . " €<br>";
-                        echo "Tila: " . htmlspecialchars($book['tila']) . "<br>";
-                        echo "Divari: " . htmlspecialchars($book['divari_nimi']) . "<br>";
                         echo "</div>";
                     }
-                }
-                 else {
+                } else {
                     echo "<p>Ei tuloksia haulla <strong>" . htmlspecialchars($query) . "</strong>.</p>";
                 }
+                
             }
         }
         ?>

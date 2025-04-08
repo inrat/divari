@@ -1,4 +1,4 @@
-<!-- admin-login.php -->
+<!-- admin-login-popup.php -->
 <?php session_start(); ?>
 require_once __DIR__ . '/../config/config.php'; 
 <!DOCTYPE html>
