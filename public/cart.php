@@ -24,7 +24,11 @@ if (!$nide_id) {
 
 // Tarkista ensin, että niteen nykyinen tila on "myynnissä"
 // Tämä voi olla erillinen SELECT-kysely, jos haluat varmistaa tilan ennen päivitystä
-$sql_check = "SELECT tila FROM public.nide WHERE nide_id = $1";
+$sql_check = "
+    SELECT tila FROM public.nide WHERE nide_id = $1
+    UNION
+    SELECT tila FROM lassen_lehti.nide WHERE nide_id = $1
+";
 $result_check = pg_query_params($db, $sql_check, [$nide_id]);
 if ($result_check) {
     $row = pg_fetch_assoc($result_check);

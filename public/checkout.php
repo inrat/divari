@@ -30,17 +30,24 @@ if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
         echo "</tr>";
     }
     echo "</table>";
+
+        // "Tilaa kirjat" -lomake
+        echo '
+        <form action="order_summary.php" method="POST" style="margin-top: 20px;">
+            <button type="submit">Tee tilaus</button>
+        </form>
+    ';
 }
 ?>
-
-<p>
-    <a href="home.php">Takaisin hakuun</a>
-</p>
 
 <!-- Tyhjennä ostoskori -nappi, joka ohjaa empty_cart.php-tiedostoon -->
 <form action="empty_cart.php" method="POST" style="margin-top: 20px;">
     <button type="submit">Tyhjennä ostoskori</button>
 </form>
+
+<p>
+    <a href="home.php">Takaisin hakuun</a>
+</p>
 
 </body>
 </html>
