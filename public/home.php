@@ -27,11 +27,24 @@ require_once __DIR__ . '/../functions/functions.php'; // Funktiot käyttöön
             padding: 10px;
             margin: 5px 0;
         }
+        .logout-link {
+            position: fixed;
+            right: 20px;
+            top: 60px; 
+            background-color:rgb(243, 18, 243);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
     <!-- Ostoskori-painike -->
     <a href="checkout.php" class="shopping-cart">Ostoskori</a>
+    
+    <!-- Kirjaudu ulos -painike, sama CSS-luokka mutta eri top-arvo -->
+    <a href="logout.php" class="logout-link">Kirjaudu ulos</a>
 
     <h1>Tervetuloa Keskusdivariin</h1>
     <h2>Haku kirjoille</h2>

@@ -1,6 +1,7 @@
+<!-- checkout.php -->
 <?php
-// checkout.php
 session_start();
+require_once __DIR__ . '/../config/config.php'; // Yhdistetään tietokantaan
 
 ?>
 <!DOCTYPE html>
@@ -19,13 +20,12 @@ if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
     echo "<table border='1' cellpadding='8' cellspacing='0'>";
     echo "<tr><th>Tekijä</th><th>Nimi</th><th>Hinta</th><th>Tila</th><th>Divari</th></tr>";
 
-    // Käydään läpi kaikki sessiossa olevat niteet
     foreach ($_SESSION['cart'] as $item) {
         echo "<tr>";
         echo "<td>" . htmlspecialchars($item['tekija']) . "</td>";
         echo "<td>" . htmlspecialchars($item['nimi'])   . "</td>";
         echo "<td>" . htmlspecialchars($item['hinta'])  . " €</td>";
-        echo "<td>" . htmlspecialchars($item['tila'])   . "</td>";
+        echo "<td>" . htmlspecialchars($item['tila'] ?? 'varattu')   . "</td>"; // Voit näyttää myös tilan
         echo "<td>" . htmlspecialchars($item['divari']) . "</td>";
         echo "</tr>";
     }
@@ -36,5 +36,11 @@ if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
 <p>
     <a href="home.php">Takaisin hakuun</a>
 </p>
+
+<!-- Tyhjennä ostoskori -nappi, joka ohjaa empty_cart.php-tiedostoon -->
+<form action="empty_cart.php" method="POST" style="margin-top: 20px;">
+    <button type="submit">Tyhjennä ostoskori</button>
+</form>
+
 </body>
 </html>
