@@ -3,6 +3,7 @@
 <html>
 <head>
     <title>Rekisteröidy</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <?php

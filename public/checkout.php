@@ -7,6 +7,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <title>Kassa</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Kassa</h1>

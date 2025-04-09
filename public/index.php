@@ -5,6 +5,7 @@
 <html>
 <head>
     <title>Keskusdivari - Kirjautuminen</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h2>Kirjaudu sisään</h2>
