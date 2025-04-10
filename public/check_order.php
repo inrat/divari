@@ -3,31 +3,62 @@
 session_start();
 require_once __DIR__ . '/../config/config.php';
 
-// Varmistetaan, että ostoskori ei ole tyhjä
-if (empty($_SESSION['cart'])) {
+// Tarkistetaan että ostoskori ja asiakas on olemassa
+if (empty($_SESSION['cart']) || !isset($_SESSION['asiakas_id']) || !isset($_SESSION['tilaustiedot'])) {
     header('Location: checkout.php');
     exit;
 }
 
-// Merkitään kaikki niteet "myydyiksi"
-foreach ($_SESSION['cart'] as $item) {
+$asiakas_id = $_SESSION['asiakas_id'];
+$cart = $_SESSION['cart'];
+$tilaustiedot = $_SESSION['tilaustiedot'];
+$postikulu_id = $tilaustiedot['postikulu_id'] ?? null;
+
+// 1. Lisätään tilaus tauluun
+$sql = "INSERT INTO tilaus (asiakas_id) VALUES ($1) RETURNING tilaus_id";
+$result = pg_query_params($db, $sql, [$asiakas_id]);
+if (!$result) {
+    die("Tilausta ei voitu tallentaa: " . pg_last_error($db));
+}
+$tilaus_id = pg_fetch_result($result, 0, 'tilaus_id');
+
+// 2. Lisätään jokainen tuote tilatut_tuotteet -tauluun ja merkitään myydyksi
+foreach ($cart as $item) {
     $nide_id = $item['nide_id'];
 
-    $sql = "UPDATE public.nide SET tila = 'myyty' WHERE nide_id = $1";
-    $result = pg_query_params($db, $sql, [$nide_id]);
+    // Lisätään yhdistystauluun
+    $sql_tt = "INSERT INTO tilatut_tuotteet (tilaus_id, nide_id) VALUES ($1, $2)";
+    pg_query_params($db, $sql_tt, [$tilaus_id, $nide_id]);
 
-    if (!$result) {
-        die("Virhe niteen päivittämisessä: " . pg_last_error($db));
+    // Päivitetään tila
+    pg_query_params($db, "UPDATE public.nide SET tila = 'myyty' WHERE nide_id = $1", [$nide_id]);
+    pg_query_params($db, "UPDATE lassen_lehti.nide SET tila = 'myyty' WHERE nide_id = $1", [$nide_id]);
+}
+
+// 3. Liitetään tilaukseen käytetty postikulu
+if ($postikulu_id !== null) {
+    $sql_posti = "INSERT INTO tilauksen_postikulut (postikulu_id, tilaus_id) VALUES ($1, $2)";
+    $result_posti = pg_query_params($db, $sql_posti, [$postikulu_id, $tilaus_id]);
+
+    if (!$result_posti) {
+        die("Virhe postikulun liittämisessä: " . pg_last_error($db));
     }
 }
 
-// Tallennetaan tilauksen yhteenveto sessioon, jotta voidaan näyttää se kiitossivulla
-$_SESSION['viimeisin_tilaus'] = $_SESSION['cart'];
+// 4. Tallennetaan tilausnäyttöön tiedot
+$_SESSION['viimeisin_tilaus'] = [
+    'tilaus_id' => $tilaus_id,
+    'tuotteet' => $cart,
+    'yhteensa' => $tilaustiedot['yhteensa'],
+    'kokonaispaino' => $tilaustiedot['kokonaispaino'],
+    'postikulut' => $tilaustiedot['postikulut'],
+    'kokonaissumma' => $tilaustiedot['kokonaissumma'],
+];
 
-// Tyhjennetään ostoskori
-$_SESSION['cart'] = [];
+// 5. Tyhjennetään ostoskori ja väliaikaiset tiedot
+unset($_SESSION['cart'], $_SESSION['tilaustiedot']);
 
-// Ohjataan kiitossivulle
+// 6. Ohjataan kiitossivulle
 header("Location: order_confirmation.php");
 exit;
 ?>

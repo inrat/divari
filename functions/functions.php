@@ -108,4 +108,58 @@ function varaa_nide($nide_id, $db) {
     $result = pg_query_params($db, $sql, [$nide_id]);
     return ($result !== false);
 }
+
+/**
+ * Laskee ostoskorin kokonaispainon ja hakee oikean postikulun
+ *
+ * @param array $cart Ostoskorin sisältö
+ * @param resource $db Tietokantayhteys
+ * @return array ['paino' => int, 'hinta' => float, 'postikulu_id' => int|null]
+ */
+function laske_postikulut($cart, $db) {
+    $kokonais_paino = 0;
+
+    // Lasketaan kaikkien tuotteiden yhteispaino
+    foreach ($cart as $item) {
+        $nide_id = $item['nide_id'];
+
+        $sql = "
+            SELECT paino FROM public.nide WHERE nide_id = $1
+            UNION
+            SELECT paino FROM lassen_lehti.nide WHERE nide_id = $1
+            LIMIT 1
+        ";
+        $result = pg_query_params($db, $sql, [$nide_id]);
+        if ($row = pg_fetch_assoc($result)) {
+            $kokonais_paino += (int)$row['paino'];
+        }
+    }
+
+    // Haetaan postikulurivi, jonka max_paino kattaa yhteispainon
+    $sql_posti = "
+        SELECT postikulu_id, hinta 
+        FROM postikulut 
+        WHERE max_paino >= $1 
+        ORDER BY max_paino ASC 
+        LIMIT 1
+    ";
+    $result_posti = pg_query_params($db, $sql_posti, [$kokonais_paino]);
+
+    if ($result_posti && pg_num_rows($result_posti) > 0) {
+        $postikulu = pg_fetch_assoc($result_posti);
+        return [
+            'paino' => $kokonais_paino,
+            'hinta' => (float)$postikulu['hinta'],
+            'postikulu_id' => (int)$postikulu['postikulu_id']
+        ];
+    }
+
+    // Jos ei löytynyt mitään postikuluriviä, palautetaan nollat
+    return [
+        'paino' => $kokonais_paino,
+        'hinta' => 0.00,
+        'postikulu_id' => null
+    ];
+}
+
 ?>

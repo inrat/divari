@@ -2,15 +2,14 @@
 <?php
 session_start();
 
-// Varmistetaan, että tilausdata on olemassa
-if (!isset($_SESSION['viimeisin_tilaus'])) {
-    header("Location: home.php");
+$tilaus = $_SESSION['viimeisin_tilaus'] ?? null;
+
+if (!$tilaus || !is_array($tilaus['tuotteet'] ?? null)) {
+    echo "<p>Tilauksen tietoja ei löytynyt.</p>";
     exit;
 }
-
-$tilaus = $_SESSION['viimeisin_tilaus'];
-unset($_SESSION['viimeisin_tilaus']); // Poistetaan kun on näytetty
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,24 +27,21 @@ unset($_SESSION['viimeisin_tilaus']); // Poistetaan kun on näytetty
             <th>Hinta</th>
             <th>Divari</th>
         </tr>
-        <?php
-        $yhteensa = 0;
-        foreach ($tilaus as $item) {
-            $yhteensa += (float)$item['hinta'];
-            echo "<tr>";
-            echo "<td>" . htmlspecialchars($item['tekija']) . "</td>";
-            echo "<td>" . htmlspecialchars($item['nimi']) . "</td>";
-            echo "<td>" . htmlspecialchars($item['hinta']) . " €</td>";
-            echo "<td>" . htmlspecialchars($item['divari']) . "</td>";
-            echo "</tr>";
-        }
-        ?>
+        <?php foreach ($tilaus['tuotteet'] as $item): ?>
+            <tr>
+                <td><?= htmlspecialchars($item['tekija']) ?></td>
+                <td><?= htmlspecialchars($item['nimi']) ?></td>
+                <td><?= htmlspecialchars($item['hinta']) ?> €</td>
+                <td><?= htmlspecialchars($item['divari']) ?></td>
+            </tr>
+        <?php endforeach; ?>
     </table>
 
-    <p><strong>Yhteensä:</strong> <?php echo number_format($yhteensa, 2); ?> €</p>
-
-    <p>Toimitamme tilauksen ilmoittamaasi osoitteeseen mahdollisimman pian.</p>
+    <p><strong>Kokonaispaino:</strong> <?= $tilaus['kokonaispaino'] ?> g</p>
+    <p><strong>Postikulut:</strong> <?= number_format($tilaus['postikulut'], 2) ?> €</p>
+    <p><strong>Lopullinen summa:</strong> <?= number_format($tilaus['kokonaissumma'], 2) ?> €</p>
 
     <p><a href="home.php">Palaa etusivulle</a></p>
 </body>
 </html>
+
