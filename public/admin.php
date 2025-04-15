@@ -1,6 +1,5 @@
-<?p<?php
-session_start();
-?>
+<!-- admin.php -->
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,6 +8,7 @@ session_start();
 <body>
     <?php if (isset($_SESSION['nimi'])): ?>
         <h1>Hei, <?php echo $_SESSION['nimi']; ?>!</h1>
+        <a href="teoslisays.php" class="button">Lis&auml;&auml; ja tarkastele teoksia</a>
     <?php else: ?>
         <h1>Hei!</h1>
     <?php endif; ?>

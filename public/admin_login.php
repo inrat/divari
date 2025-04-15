@@ -1,7 +1,6 @@
 <?php
 session_start();
-
-require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/../divari/config/config.php'; 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $divari_id = $_POST['divari_id'];
@@ -9,12 +8,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $query = "SELECT divari_id, nimi, salasana FROM divarit WHERE divari_id = $1";
     $result = pg_query_params($db, $query, [$divari_id]);
-
     if ($row = pg_fetch_assoc($result)) {
-
         if ($password === $row['salasana']) {
             $_SESSION['message'] = "Kirjautuminen onnistui!";
             $_SESSION['nimi'] = $row['nimi'];
+            $_SESSION['divari_id'] = $row['divari_id']; 
             header("Location: admin.php");
             exit();
         } else {
