@@ -60,6 +60,46 @@ INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
 VALUES ('J.R.R. Tolkien', 'Taru sormusten herrasta', '9789513187475', '1954', 'romaani', 'fantasia');
 INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
 VALUES ('Margaret Atwood', 'Orjattaresi', '9789513187482', '1985', 'romaani', 'dystopia');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Fjodor Dostojevski', 'Rikos ja rangaistus', '9789513187499', '1866', 'romaani', 'klassikko');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Gabriel García Márquez', 'Sadan vuoden yksinäisyys', '9789513187505', '1967', 'romaani', 'maginen realismi');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Homer', 'Ilias', '9789513187512', '762 eaa', 'epos', 'antiikki');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Mary Shelley', 'Frankenstein', '9789513187529', '1818', 'romaani', 'kauhu');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Arthur Conan Doyle', 'Baskervillen koira', '9789513187536', '1902', 'romaani', 'dekkari');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Leo Tolstoi', 'Sota ja rauha', '9789513187543', '1869', 'romaani', 'historia');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Franz Kafka', 'Oikeusjuttu', '9789513187550', '1925', 'romaani', 'dystopia');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Herman Melville', 'Moby Dick', '9789513187567', '1851', 'romaani', 'seikkailu');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Charlotte Brontë', 'Jane Eyre', '9789513187574', '1847', 'romaani', 'romantiikka');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Antoine de Saint-Exupéry', 'Pikku prinssi', '9789513187581', '1943', 'romaani', 'satukirja');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Aleksis Kivi', 'Seitsemän veljestä', '9789513187598', '1870', 'romaani', 'klassikko');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Mika Waltari', 'Sinuhe egyptiläinen', '9789513187604', '1945', 'romaani', 'historia');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Eino Leino', 'Helkavirsiä', '9789513187611', '1903', 'runokokoelma', 'runous');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Väinö Linna', 'Tuntematon sotilas', '9789513187628', '1954', 'romaani', 'historia');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Tove Jansson', 'Muumipeikko ja pyrstötähti', '9789513187635', '1946', 'romaani', 'lastenkirja');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Sofi Oksanen', 'Puhdistus', '9789513187642', '2008', 'romaani', 'historia');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Arto Paasilinna', 'Jäniksen vuosi', '9789513187659', '1975', 'romaani', 'huumori');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Kari Hotakainen', 'Juoksuhaudantie', '9789513187666', '2002', 'romaani', 'draama');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Johanna Sinisalo', 'Ennen päivänlaskua ei voi', '9789513187673', '2000', 'romaani', 'fantasia');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Leena Krohn', 'Tainaron', '9789513187680', '1985', 'romaani', 'fantasia');
 
 INSERT INTO postikulut (max_paino, hinta)
 VALUES ('50', '2.50');
