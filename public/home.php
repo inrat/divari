@@ -9,7 +9,7 @@ require_once __DIR__ . '/../functions/functions.php'; // Funktiot käyttöön
 <head>
     <meta charset="UTF-8">
     <title>Keskusdivari - Etusivu</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style3.css">
     <style>
         /* Ostoskoriin pääsyn nappi oikeassa reunassa */
         .shopping-cart {
