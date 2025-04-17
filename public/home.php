@@ -10,35 +10,6 @@ require_once __DIR__ . '/../functions/functions.php'; // Funktiot käyttöön
     <meta charset="UTF-8">
     <title>Keskusdivari - Etusivu</title>
     <link rel="stylesheet" href="style3.css">
-    <style>
-        /* Ostoskoriin pääsyn nappi oikeassa reunassa */
-        .shopping-cart {
-            position: fixed;
-            right: 20px;
-            top: 20px;
-            background-color: #f39c12;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            text-decoration: none;
-        }
-        /* Perustyyli hakutuloksille */
-        .result-item {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 5px 0;
-        }
-        .logout-link {
-            position: fixed;
-            right: 20px;
-            top: 60px; 
-            background-color:rgb(243, 18, 243);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            text-decoration: none;
-        }
-    </style>
 </head>
 <body>
     <!-- Ostoskori-painike -->
