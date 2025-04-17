@@ -17,13 +17,12 @@ $divari  = $_POST['divari']  ?? null;
 $nimi    = $_POST['nimi']    ?? null;
 $tekija  = $_POST['tekija']  ?? null;
 
-// Voi olla hyvä tarkistaa, että $nide_id on oikeasti annettu
+// Tarkistaa, että $nide_id on oikeasti annettu
 if (!$nide_id) {
     die("Virhe: nide_id puuttuu!");
 }
 
-// Tarkista ensin, että niteen nykyinen tila on "myynnissä"
-// Tämä voi olla erillinen SELECT-kysely, jos haluat varmistaa tilan ennen päivitystä
+// Tarkistaa ensin, että niteen nykyinen tila on "myynnissä"
 $sql_check = "
     SELECT tila FROM public.nide WHERE nide_id = $1
     UNION

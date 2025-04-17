@@ -25,7 +25,7 @@ if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
         echo "<td>" . htmlspecialchars($item['tekija']) . "</td>";
         echo "<td>" . htmlspecialchars($item['nimi'])   . "</td>";
         echo "<td>" . htmlspecialchars($item['hinta'])  . " €</td>";
-        echo "<td>" . htmlspecialchars($item['tila'] ?? 'varattu')   . "</td>"; // Voit näyttää myös tilan
+        echo "<td>" . htmlspecialchars($item['tila'] ?? 'varattu')   . "</td>";
         echo "<td>" . htmlspecialchars($item['divari']) . "</td>";
         echo "</tr>";
     }
