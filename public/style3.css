@@ -1,6 +1,3 @@
-/* Luonnonläheinen retro -tyyli */
-/* Taustaväri: luonnollinen beige, teksti musta, painikkeet tumma lila-harmaa, korostus vanha roosa, linkit vaalea viini */
-
 body {
     font-family: 'Helvetica', Arial, sans-serif;
     background-color: #f2e9dc; /* luonnollinen beige */
@@ -19,6 +16,37 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
+
+/* 1) Keskittää kaiken kohdan .container sisällä vaakatasossa */
+.container {
+    text-align: center;     /* tekstit ja inline‑elementit keskelle */
+  }
+  
+  /* 2) Lomake ja sen kentät keskelle */
+  .container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;    /* lomakkeen lapset (label, input, button) keskelle */
+    gap: 15px;
+  }
+  
+  /* 3) Rajoitetaan tekstikenttien ja painikkeen leveys ja keskitetään ne */
+  .container form label,
+  .container form input,
+  .container form button {
+    width: 100%;
+    max-width: 300px;        /* haluamasi enimmäisleveys */
+  }
+  
+  /* 4) (Tarvittaessa) pitää labelin tekstin vasemmassa reunassa */
+  .container form label {
+    text-align: left;
+  }
+  
+  /* 5) Varmistetaan, että <p>-elementit kontissa ovat keskitettyjä */
+  .container p {
+    text-align: center;
+  }  
 
 /* Otsikot */
 h1, h2, h3 {

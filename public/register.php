@@ -34,6 +34,11 @@
             <br>
             <button type="submit">Rekisteröidy</button>
         </form>
+        <p>
+            <a href="index.php" class="back-button">
+            ← Takaisin kirjautumiseen
+            </a>
+        </p>
     </div>
 </body>
 </html>
