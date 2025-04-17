@@ -4,50 +4,115 @@ require_once __DIR__ . '/../config/config.php';
 
 /**
  * Hakee kirjoja annetulla hakusanalla.
- * Haku suoritetaan kahdesta eri skeemasta: lassen_lehti ja public.
- * Palauttaa kirjojen perustiedot (ei niteitä), jos ne vastaavat hakukriteeriä.
+ * Haku suoritetaan kahdesta eri skeemasta: lassen_lehti ja public (Gallein Galle).
+ * Palauttaa kirjojen perustiedot, jos ne vastaavat hakukriteeriä.
  *
- * @param string $query Hakusana (esim. kirjailijan nimi, teoksen nimi tai tyyppi)
+ * @param string $query Hakusana (esim. kirjailijan nimi, teoksen nimi, luokka tai tyyppi)
  * @param resource $db PostgreSQL-tietokantayhteys
  * @return array Palauttaa löydetyt teokset assosiatiivisena taulukkona
  */
 function hae_kirjat($query, $db) {
-    if (empty($query)) {
-        return [];
+    $query = trim($query);
+
+    if ($query === '') {
+        // Ei hakusanaa → haetaan kaikki teokset molemmista lähteistä
+        $sql = "
+            SELECT DISTINCT t.tekija, t.nimi, t.tyyppi, t.luokka, t.isbn
+            FROM public.teokset t
+            LEFT JOIN public.nide n ON t.teos_id = n.teos_id
+
+            UNION
+
+            SELECT DISTINCT t.tekija, t.nimi, t.tyyppi, t.luokka, t.isbn
+            FROM lassen_lehti.teokset t
+            LEFT JOIN lassen_lehti.nide n ON t.teos_id = n.teos_id
+        ";
+    } else {
+        // Hakusana → etsitään molemmista teostietokannoista, niteitä ei rajoiteta
+        $sql = "
+            SELECT DISTINCT t.tekija, t.nimi, t.tyyppi, t.luokka, t.isbn
+            FROM public.teokset t
+            LEFT JOIN public.nide n ON t.teos_id = n.teos_id
+            WHERE LOWER(t.tekija) LIKE LOWER('%$query%')
+               OR LOWER(t.nimi) LIKE LOWER('%$query%')
+               OR LOWER(t.tyyppi) LIKE LOWER('%$query%')
+               OR LOWER(t.luokka) LIKE LOWER('%$query%')
+
+            UNION
+
+            SELECT DISTINCT t.tekija, t.nimi, t.tyyppi, t.luokka, t.isbn
+            FROM lassen_lehti.teokset t
+            LEFT JOIN lassen_lehti.nide n ON t.teos_id = n.teos_id
+            WHERE LOWER(t.tekija) LIKE LOWER('%$query%')
+               OR LOWER(t.nimi) LIKE LOWER('%$query%')
+               OR LOWER(t.tyyppi) LIKE LOWER('%$query%')
+               OR LOWER(t.luokka) LIKE LOWER('%$query%')
+        ";
     }
 
-    // SQL-kysely: haku sekä lassen_lehti- että public-skeemoista
-    $sql = "
-        SELECT DISTINCT t.tekija, t.nimi, t.tyyppi, t.luokka, t.isbn
-        FROM lassen_lehti.teokset t
-        JOIN lassen_lehti.nide n ON t.teos_id = n.teos_id
-        JOIN public.divarit d ON n.divari_id = d.divari_id
-        WHERE LOWER(t.tekija) LIKE LOWER('%$query%')
-           OR LOWER(t.nimi) LIKE LOWER('%$query%')
-           OR LOWER(t.tyyppi) LIKE LOWER('%$query%')
-           OR LOWER(t.luokka) LIKE LOWER('%$query%')
-           OR LOWER(d.nimi) LIKE LOWER('%$query%')
-
-        UNION
-
-        SELECT DISTINCT t.tekija, t.nimi, t.tyyppi, t.luokka, t.isbn
-        FROM public.teokset t
-        JOIN public.nide n ON t.teos_id = n.teos_id
-        JOIN public.divarit d ON n.divari_id = d.divari_id
-        WHERE LOWER(t.tekija) LIKE LOWER('%$query%')
-           OR LOWER(t.nimi) LIKE LOWER('%$query%')
-           OR LOWER(t.tyyppi) LIKE LOWER('%$query%')
-           OR LOWER(t.luokka) LIKE LOWER('%$query%')
-           OR LOWER(d.nimi) LIKE LOWER('%$query%')
-    ";
-
     $result = pg_query($db, $sql);
-
     if (!$result) {
         die("Virhe SQL-haussa: " . pg_last_error($db));
     }
 
-    return pg_fetch_all($result) ?: []; // Palautetaan taulukko tai tyhjä taulukko
+    return pg_fetch_all($result) ?: [];
+}
+
+/**
+ * Hakee kaikki käytetyt teostyypit tietokannasta.
+ * Haku suoritetaan kahdesta eri skeemasta: public (Gallein Galle) ja lassen_lehti.
+ * Palauttaa uniikit tyyppi-arvot merkkijonoina, joita voidaan käyttää esimerkiksi suodatusvalikossa.
+ *
+ * @param resource $db PostgreSQL-tietokantayhteys
+ * @return array Palauttaa tyyppi-arvot yksinkertaisena merkkijonotaulukkona
+ */
+function hae_tyypit($db) {
+    $sql = "
+        SELECT DISTINCT tyyppi FROM public.teokset
+        UNION
+        SELECT DISTINCT tyyppi FROM lassen_lehti.teokset
+    ";
+    $result = pg_query($db, $sql);
+    if (!$result) {
+        return [];
+    }
+
+    $tyypit = [];
+    while ($row = pg_fetch_assoc($result)) {
+        if (!empty($row['tyyppi'])) {
+            $tyypit[] = $row['tyyppi'];
+        }
+    }
+
+    return $tyypit;
+}
+
+/**
+ * Hakee kaikki eri luokat tietokannasta yhdistettynä molemmista skeemoista
+ *
+ * @param resource $db Tietokantayhteys
+ * @return array Palauttaa taulukon luokista (esim. ['romaani', 'historia'])
+ */
+function hae_luokat($db) {
+    $luokat = [];
+    $sql = "
+        SELECT DISTINCT luokka FROM (
+            SELECT luokka FROM public.teokset
+            UNION
+            SELECT luokka FROM lassen_lehti.teokset
+        ) AS yhdistetty
+        WHERE luokka IS NOT NULL
+        ORDER BY luokka;
+    ";
+
+    $result = pg_query($db, $sql);
+    if ($result) {
+        while ($row = pg_fetch_assoc($result)) {
+            $luokat[] = $row['luokka'];
+        }
+    }
+
+    return $luokat;
 }
 
 /**

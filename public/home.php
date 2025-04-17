@@ -2,7 +2,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../config/config.php';
-require_once __DIR__ . '/../functions/functions.php'; // Funktiot käyttöön
+require_once __DIR__ . '/../functions/functions.php';
 ?>
 <!DOCTYPE html>
 <html>
@@ -22,18 +22,66 @@ require_once __DIR__ . '/../functions/functions.php'; // Funktiot käyttöön
     <h2>Haku kirjoille</h2>
     <form action="home.php" method="GET">
         <input type="text" name="q" placeholder="Kirjoita hakusanoja..." value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q']) : ''; ?>">
+    
+        <!-- Luokkasuodatin -->
+        <?php
+        $valittu_luokka = $_GET['luokka'] ?? '';
+        $luokat = hae_luokat($db);
+
+        $valittu_tyyppi = $_GET['tyyppi'] ?? '';
+        $tyypit = hae_tyypit($db);
+
+        ?>
+
+        <select name="luokka">
+            <option value="" <?php if ($valittu_luokka === '') echo 'selected'; ?>>Kaikki luokat</option>
+            <?php foreach ($luokat as $luokka): ?>
+                <option value="<?php echo htmlspecialchars($luokka); ?>"
+                    <?php if (strtolower($valittu_luokka) === strtolower($luokka)) echo 'selected'; ?>>
+                    <?php echo ucfirst(htmlspecialchars($luokka)); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+
+        <select name="tyyppi">
+            <option value="" <?php if ($valittu_tyyppi === '') echo 'selected'; ?>>Kaikki tyypit</option>
+            <?php foreach ($tyypit as $tyyppi): ?>
+                <option value="<?php echo htmlspecialchars($tyyppi); ?>"
+                    <?php if (strtolower($valittu_tyyppi) === strtolower($tyyppi)) echo 'selected'; ?>>
+                    <?php echo ucfirst(htmlspecialchars($tyyppi)); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+
+
         <button type="submit">Hae</button>
     </form>
+
     <div id="results">
         <?php
-        if (isset($_GET['q'])) {
-            $query = trim($_GET['q']);
+            $query = trim($_GET['q'] ?? '');
+            $luokka = $_GET['luokka'] ?? '';
+            $tyyppi = $_GET['tyyppi'] ?? '';
 
-            if (strlen($query) < 3) {
-                echo "<p>Hakusanan on oltava vähintään 3 merkkiä pitkä.</p>";
-            } else {
-                $results = hae_kirjat($query, $db); // Käytetään funktiota hakemiseen
+            
+            $results = hae_kirjat($query, $db);
 
+                if ($luokka !== '') {
+                    $results = array_filter($results, function($book) use ($luokka) {
+                        return strtolower($book['luokka']) === strtolower($luokka);
+                    });
+                }
+                if ($tyyppi !== '') {
+                    $results = array_filter($results, function($book) use ($tyyppi) {
+                        return strtolower($book['tyyppi']) === strtolower($tyyppi);
+                    });
+                }
+                
+            // Järjestä nimen mukaan aakkosjärjestykseen
+            usort($results, function($a, $b) {
+                return strcasecmp($a['nimi'], $b['nimi']);
+            });
+            
                 if ($results) {
                     echo "<h3>Hakutulokset:</h3>";
                     foreach ($results as $book) {
@@ -47,11 +95,8 @@ require_once __DIR__ . '/../functions/functions.php'; // Funktiot käyttöön
                         echo "</div>";
                     }
                 } else {
-                    echo "<p>Ei tuloksia haulla <strong>" . htmlspecialchars($query) . "</strong>.</p>";
-                }
-                
-            }
-        }
+                    echo "<p>Ei tuloksia annetulla haulla.</p>";
+                }    
         ?>
     </div>
 </body>
