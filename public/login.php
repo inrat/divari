@@ -1,4 +1,4 @@
-// Login
+<!-- login.php -->
 <?php
 session_start();
 require_once __DIR__ . '/../config/config.php'; // Yhdistetään tietokantaan
@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($row = pg_fetch_assoc($result)) {
         // Tarkistetaan salasana
         if (password_verify($password, $row['salasana'])) {
-            $_SESSION['user_id'] = $row['asiakas_id'];
+            $_SESSION['asiakas_id'] = $row['asiakas_id'];
             $_SESSION['message'] = "Kirjautuminen onnistui!";
             header("Location: home.php");
             exit();

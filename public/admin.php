@@ -1,5 +1,5 @@
-<?p<?php
-session_start();
+<!-- admin.php -->
+<?php session_start(); ?>
 ?>
 <!DOCTYPE html>
 <html>
