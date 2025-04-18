@@ -4,8 +4,10 @@ require_once __DIR__ . '/../config/config.php';
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="style3.css">
+    <div class="container">
     <title>Keskusdivari - Admin-kirjautuminen</title>
-    <h2>Kirjaudu sisään</h2>
+    <h2>Kirjaudu sisään - Admin</h2>
     <?php 
 
     if (isset($_SESSION['message'])) { 
@@ -21,5 +23,6 @@ require_once __DIR__ . '/../config/config.php';
         <br>
         <button type="submit">Kirjaudu</button>
     </form>
+    </div>
     </head>
     <body>

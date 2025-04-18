@@ -5,6 +5,7 @@
 <html>
 <head>
     <title>Admin Sivu - <?php echo isset($_SESSION['nimi']) ? $_SESSION['nimi'] : 'Not Logged In'; ?></title>
+    <link rel="stylesheet" href="style3.css">
 </head>
 <body>
     <?php if (isset($_SESSION['nimi'])): ?>
