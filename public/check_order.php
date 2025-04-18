@@ -14,7 +14,7 @@ $cart = $_SESSION['cart'];
 $tilaustiedot = $_SESSION['tilaustiedot'];
 $postikulu_id = $tilaustiedot['postikulu_id'] ?? null;
 
-// 1. Lisätään tilaus tauluun
+// Lisätään tilaus tauluun
 $sql = "INSERT INTO tilaus (asiakas_id) VALUES ($1) RETURNING tilaus_id";
 $result = pg_query_params($db, $sql, [$asiakas_id]);
 if (!$result) {
@@ -22,7 +22,7 @@ if (!$result) {
 }
 $tilaus_id = pg_fetch_result($result, 0, 'tilaus_id');
 
-// 2. Lisätään jokainen tuote tilatut_tuotteet -tauluun ja merkitään myydyksi
+// Lisätään jokainen tuote tilatut_tuotteet -tauluun ja merkitään myydyksi
 foreach ($cart as $item) {
     $nide_id = $item['nide_id'];
 
@@ -35,7 +35,7 @@ foreach ($cart as $item) {
     pg_query_params($db, "UPDATE lassen_lehti.nide SET tila = 'myyty' WHERE nide_id = $1", [$nide_id]);
 }
 
-// 3. Liitetään tilaukseen käytetty postikulu
+// Liitetään tilaukseen käytetty postikulu
 if ($postikulu_id !== null) {
     $sql_posti = "INSERT INTO tilauksen_postikulut (postikulu_id, tilaus_id) VALUES ($1, $2)";
     $result_posti = pg_query_params($db, $sql_posti, [$postikulu_id, $tilaus_id]);
@@ -45,7 +45,7 @@ if ($postikulu_id !== null) {
     }
 }
 
-// 4. Tallennetaan tilausnäyttöön tiedot
+// Tallennetaan tilausnäyttöön tiedot
 $_SESSION['viimeisin_tilaus'] = [
     'tilaus_id' => $tilaus_id,
     'tuotteet' => $cart,
@@ -55,10 +55,10 @@ $_SESSION['viimeisin_tilaus'] = [
     'kokonaissumma' => $tilaustiedot['kokonaissumma'],
 ];
 
-// 5. Tyhjennetään ostoskori ja väliaikaiset tiedot
+// Tyhjennetään ostoskori ja väliaikaiset tiedot
 unset($_SESSION['cart'], $_SESSION['tilaustiedot']);
 
-// 6. Ohjataan kiitossivulle
+// Ohjataan kiitossivulle
 header("Location: order_confirmation.php");
 exit;
 ?>

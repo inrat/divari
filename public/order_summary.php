@@ -38,7 +38,7 @@ $_SESSION['tilaustiedot'] = [
     'kokonaispaino' => $kokonaispaino,
     'postikulut' => $postikulu,
     'kokonaissumma' => $kokonaissumma,
-    'postikulu_id' => $posti['postikulu_id'] ?? null, // jos haettu talteen funktiossa
+    'postikulu_id' => $posti['postikulu_id'] ?? null,
 ];
 ?>
 <!DOCTYPE html>

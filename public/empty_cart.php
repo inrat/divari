@@ -16,7 +16,7 @@ foreach ($_SESSION['cart'] as $item) {
     // Päivitetään tila "myynnissä"
     $sql = "UPDATE public.nide SET tila = 'myynnissä' WHERE nide_id = $1";
     $result = pg_query_params($db, $sql, [$nide_id]);
-    // Voit lisätä virhetarkistuksen, jos haluat varmistaa päivityksen onnistumisen
+    // Virhetarkistus
     if (!$result) {
         error_log("Virhe tilan palautuksessa nide_id: $nide_id - " . pg_last_error($db));
     }

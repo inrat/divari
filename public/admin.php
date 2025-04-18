@@ -1,6 +1,5 @@
 <!-- admin.php -->
 <?php session_start(); ?>
-?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,8 +9,12 @@
 <body>
     <?php if (isset($_SESSION['nimi'])): ?>
         <h1>Hei, <?php echo $_SESSION['nimi']; ?>!</h1>
+        <a href="teos_ja_nide_lisays.php" class="button">Lis&auml;&auml; ja tarkastele teoksia</a>
     <?php else: ?>
         <h1>Hei!</h1>
+        <p>Et ole kirjautuneena Adminiin. Siirry kirjautumiseen 
+            <a href="admin_login_popup.php"> t&auml;st&auml;.</a>
+        </p>
     <?php endif; ?>
 </body>
 </html>

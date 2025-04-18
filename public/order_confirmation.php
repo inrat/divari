@@ -2,8 +2,10 @@
 <?php
 session_start();
 
+// Haetaan viimeisin tilaus sessiosta
 $tilaus = $_SESSION['viimeisin_tilaus'] ?? null;
 
+// Näytetään tarvittaessa virheviesti
 if (!$tilaus || !is_array($tilaus['tuotteet'] ?? null)) {
     echo "<p>Tilauksen tietoja ei löytynyt.</p>";
     exit;

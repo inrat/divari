@@ -22,16 +22,16 @@ require_once __DIR__ . '/../config/config.php'; // Yhdistetään tietokantaan
         echo "<table border='1' cellpadding='8' cellspacing='0'>";
         echo "<tr><th>Tekijä</th><th>Nimi</th><th>Hinta</th><th>Tila</th><th>Divari</th></tr>";
 
-        foreach ($_SESSION['cart'] as $item) {
-            echo "<tr>";
-            echo "<td>" . htmlspecialchars($item['tekija']) . "</td>";
-            echo "<td>" . htmlspecialchars($item['nimi'])   . "</td>";
-            echo "<td>" . htmlspecialchars($item['hinta'])  . " €</td>";
-            echo "<td>" . htmlspecialchars($item['tila'] ?? 'varattu')   . "</td>"; // Voit näyttää myös tilan
-            echo "<td>" . htmlspecialchars($item['divari']) . "</td>";
-            echo "</tr>";
-        }
-        echo "</table>";
+    foreach ($_SESSION['cart'] as $item) {
+        echo "<tr>";
+        echo "<td>" . htmlspecialchars($item['tekija']) . "</td>";
+        echo "<td>" . htmlspecialchars($item['nimi'])   . "</td>";
+        echo "<td>" . htmlspecialchars($item['hinta'])  . " €</td>";
+        echo "<td>" . htmlspecialchars($item['tila'] ?? 'varattu')   . "</td>";
+        echo "<td>" . htmlspecialchars($item['divari']) . "</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
 
             // "Tilaa kirjat" -lomake
             echo '
