@@ -1,7 +1,7 @@
 <!-- nidelisays_process.php -->
 <?php
 session_start();
-require_once __DIR__ . '/../divari/config/config.php'; 
+require_once __DIR__ . '/../config/config.php'; 
 
 // Varmistetaan että käyttäjä on kirjautunut.
 if (!isset($_SESSION['divari_id'])) {

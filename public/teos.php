@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once __DIR__ . '/../divari/config/config.php';
+require_once __DIR__ . '/../config/config.php';
 
 $teos_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 

@@ -1,14 +1,14 @@
 <!-- admin_login_popup.php -->
 <?php 
 session_start();
-require_once __DIR__ . '/../divari/config/config.php';
+require_once __DIR__ . '/../config/config.php';
 ?>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Keskusdivari - Admin-kirjautuminen</title>
 </head>
-<body>
+<body>s
     <h2>Kirjaudu sis&auml;&auml;n</h2>
 
     <?php

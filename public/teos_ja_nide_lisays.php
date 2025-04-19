@@ -1,7 +1,7 @@
 <!-- toes_ja_nide_lisays.php -->
 <?php
 session_start();
-require_once __DIR__ . '/../divari/config/config.php';
+require_once __DIR__ . '/../config/config.php';
 
 // Virheviesti tilanteeseen, jossa admin ei ole kirjautuneena. 
 if (!isset($_SESSION['divari_id'])) {
@@ -10,10 +10,11 @@ if (!isset($_SESSION['divari_id'])) {
     exit();
 }
 
-if (isset($_SESSION['message'])) {
-    echo "<p style='font-weight: bold;'>" . htmlspecialchars($_SESSION['message']) . "</p>";
-    unset($_SESSION['message']); // estää viestiä näkymästä uudelleen
-}
+if (isset($_SESSION['message'])) { 
+    echo "<p>" . $_SESSION['message'] . "</p>"; 
+    unset($_SESSION['message']); 
+} 
+
 
 // Määritellään kirjautunut divari
 $divari_id = $_SESSION['divari_id'];
@@ -264,6 +265,17 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Varmistetaan, että ISBN on 13 numeroa pitkä.
         if (isbn && !(/^(?:\d{13})$/.test(isbn))) {
+                    $isbn_query = "SELECT t.*
+                              FROM teokset t 
+                              WHERE isbn = t.isbn";
+                    $isbn_result = pg_query($db, $isbn_query);
+                if ($isbn_result && pg_num_rows($isbn_result) > 0) {  
+                    echo "<p class='error'>Teos l&ouml;ytyy jo tietokannasta. </p>";
+                    $isbn_result = false;
+                } else {
+                    echo "<p class='error'>Teoksen nimen on oltava v&auml;hint&auml;&auml;n 3 merkki&auml; pitk&auml;.</p>";
+                    $isbn_result = false;
+                }
             e.preventDefault();
             showError(this, 'ISBN:n tulee olla 13 numeroa');
             return;
