@@ -20,7 +20,7 @@ INSERT INTO asiakas (nimi, osoite, email, salasana, puhelinnumero)
 VALUES ('Jessie Churchill', '9208 Back', 'belva369@yahoo.com', 'microsoft','123465');
 
 INSERT INTO divarit (nimi, osoite, salasana)
-VALUES ('Keskusdivari', 'Pirkankatu 2, '000000');
+VALUES ('Keskusdivari', 'Pirkankatu 2', '000000');
 INSERT INTO divarit (nimi, osoite, salasana)
 VALUES ('Lassen lehti', 'Kanslerinrinne 1', 'lasse');
 INSERT INTO divarit (nimi, osoite, salasana)
