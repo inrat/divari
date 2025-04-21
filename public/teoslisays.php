@@ -1,6 +1,7 @@
+<!-- teoslisays.php -->
 <?php
 session_start();
-require_once __DIR__ . '/../divari/config/config.php';
+require_once __DIR__ . '/../config/config.php';
 
 // Virheviesti tilanteeseen, jossa admin ei ole kirjautuneena. 
 if (!isset($_SESSION['divari_id'])) {

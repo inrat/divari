@@ -9,10 +9,10 @@ CREATE TABLE lassen_lehti.teokset (
      tekija VARCHAR(255) NOT NULL,
      nimi VARCHAR(255) NOT NULL,
      isbn CHAR(13) UNIQUE,
-     julkaisuvuosi SMALLINT CHECK (julkaisuvuosi BETWEEN 0 ANEAR FROM CURRENT_DATE)),
+     julkaisuvuosi SMALLINT CHECK (julkaisuvuosi BETWEEN 0 AND EXTRACT(YEAR FROM CURRENT_DATE)),
      tyyppi VARCHAR(255) NOT NULL,
      luokka VARCHAR(255) NOT NULL
-;
+);
 
 CREATE TABLE lassen_lehti.nide (
     nide_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

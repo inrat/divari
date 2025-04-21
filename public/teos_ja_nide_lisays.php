@@ -1,7 +1,7 @@
 <!-- toes_ja_nide_lisays.php -->
 <?php
 session_start();
-require_once __DIR__ . '/../divari/config/config.php';
+require_once __DIR__ . '/../config/config.php';
 
 // Virheviesti tilanteeseen, jossa admin ei ole kirjautuneena. 
 if (!isset($_SESSION['divari_id'])) {
@@ -305,28 +305,3 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
-<style>
-.result-item {
-    margin-bottom: 15px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-.error {
-    color: red;
-    font-weight: bold;
-}
-.select-teos {
-    background-color: #4CAF50;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 5px;
-}
-.select-teos:hover {
-    background-color: #45a049;
-}
-</style>

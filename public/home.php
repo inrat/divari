@@ -2,73 +2,101 @@
 <?php
 session_start();
 require_once __DIR__ . '/../config/config.php';
-require_once __DIR__ . '/../functions/functions.php'; // Funktiot käyttöön
+require_once __DIR__ . '/../functions/functions.php';
 ?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Keskusdivari - Etusivu</title>
-    <style>
-        /* Ostoskoriin pääsyn nappi oikeassa reunassa */
-        .shopping-cart {
-            position: fixed;
-            right: 20px;
-            top: 20px;
-            background-color: #f39c12;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            text-decoration: none;
-        }
-        /* Perustyyli hakutuloksille */
-        .result-item {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 5px 0;
-        }
-    </style>
+    <link rel="stylesheet" href="style3.css">
 </head>
 <body>
     <!-- Ostoskori-painike -->
     <a href="checkout.php" class="shopping-cart">Ostoskori</a>
+    
+    <!-- Kirjaudu ulos -painike, sama CSS-luokka mutta eri top-arvo -->
+    <a href="logout.php" class="logout-link">Kirjaudu ulos</a>
 
     <h1>Tervetuloa Keskusdivariin</h1>
     <h2>Haku kirjoille</h2>
     <form action="home.php" method="GET">
         <input type="text" name="q" placeholder="Kirjoita hakusanoja..." value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q']) : ''; ?>">
+    
+        <!-- Luokkasuodatin -->
+        <?php
+        $valittu_luokka = $_GET['luokka'] ?? '';
+        $luokat = hae_luokat($db);
+
+        $valittu_tyyppi = $_GET['tyyppi'] ?? '';
+        $tyypit = hae_tyypit($db);
+
+        ?>
+
+        <select name="luokka">
+            <option value="" <?php if ($valittu_luokka === '') echo 'selected'; ?>>Kaikki luokat</option>
+            <?php foreach ($luokat as $luokka): ?>
+                <option value="<?php echo htmlspecialchars($luokka); ?>"
+                    <?php if (strtolower($valittu_luokka) === strtolower($luokka)) echo 'selected'; ?>>
+                    <?php echo ucfirst(htmlspecialchars($luokka)); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+
+        <select name="tyyppi">
+            <option value="" <?php if ($valittu_tyyppi === '') echo 'selected'; ?>>Kaikki tyypit</option>
+            <?php foreach ($tyypit as $tyyppi): ?>
+                <option value="<?php echo htmlspecialchars($tyyppi); ?>"
+                    <?php if (strtolower($valittu_tyyppi) === strtolower($tyyppi)) echo 'selected'; ?>>
+                    <?php echo ucfirst(htmlspecialchars($tyyppi)); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+
+
         <button type="submit">Hae</button>
     </form>
+
     <div id="results">
         <?php
-        if (isset($_GET['q'])) {
-            $query = trim($_GET['q']);
+            $query = trim($_GET['q'] ?? '');
+            $luokka = $_GET['luokka'] ?? '';
+            $tyyppi = $_GET['tyyppi'] ?? '';
 
-            if (strlen($query) < 3) {
-                echo "<p>Hakusanan on oltava vähintään 3 merkkiä pitkä.</p>";
-            } else {
-                $results = hae_kirjat($query, $db); // Käytetään funktiota hakemiseen
+            
+            $results = hae_kirjat($query, $db);
 
+                if ($luokka !== '') {
+                    $results = array_filter($results, function($book) use ($luokka) {
+                        return strtolower($book['luokka']) === strtolower($luokka);
+                    });
+                }
+                if ($tyyppi !== '') {
+                    $results = array_filter($results, function($book) use ($tyyppi) {
+                        return strtolower($book['tyyppi']) === strtolower($tyyppi);
+                    });
+                }
+                
+            // Järjestä nimen mukaan aakkosjärjestykseen
+            usort($results, function($a, $b) {
+                return strcasecmp($a['nimi'], $b['nimi']);
+            });
+            
                 if ($results) {
                     echo "<h3>Hakutulokset:</h3>";
                     foreach ($results as $book) {
                         echo "<div class='result-item'>";
-                        echo "<strong>" . htmlspecialchars($book['nimi']) . "</strong><br>";
+                        echo "<a href='search.php?tekija=" . urlencode($book['tekija']) . "&nimi=" . urlencode($book['nimi']) . "'>";
+                        echo "<strong>" . htmlspecialchars($book['nimi']) . "</strong>";
+                        echo "</a><br>";
                         echo "Tekijä: " . htmlspecialchars($book['tekija']) . "<br>";
                         echo "Tyyppi: " . htmlspecialchars($book['tyyppi']) . "<br>";
                         echo "Luokka: " . htmlspecialchars($book['luokka']) . "<br>";
-                        echo "ISBN: " . htmlspecialchars($book['isbn']) . "<br>";
-                        echo "Hinta: " . number_format($book['hinta'], 2, ',', ' ') . " €<br>";
-                        echo "Tila: " . htmlspecialchars($book['tila']) . "<br>";
-                        echo "Divari: " . htmlspecialchars($book['divari_nimi']) . "<br>";
                         echo "</div>";
                     }
-                }
-                 else {
-                    echo "<p>Ei tuloksia haulla <strong>" . htmlspecialchars($query) . "</strong>.</p>";
-                }
-            }
-        }
+                } else {
+                    echo "<p>Ei tuloksia annetulla haulla.</p>";
+                }    
         ?>
     </div>
 </body>

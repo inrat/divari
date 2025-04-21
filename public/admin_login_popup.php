@@ -1,7 +1,7 @@
 <!-- admin_login_popup.php -->
 <?php 
 session_start();
-require_once __DIR__ . '/../divari/config/config.php';
+require_once __DIR__ . '/../config/config.php';
 ?>
 <!DOCTYPE html>
 <html>
@@ -29,3 +29,4 @@ require_once __DIR__ . '/../divari/config/config.php';
     </form>
 </body>
 </html>
+
