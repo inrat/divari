@@ -7,6 +7,7 @@ require_once __DIR__ . '/../functions/functions.php';
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="style3.css">
     <meta charset="UTF-8">
     <title>Teoksen niteet</title>
     <style>
@@ -18,6 +19,7 @@ require_once __DIR__ . '/../functions/functions.php';
     </style>
 </head>
 <body>
+    <div class="container">
     <h1>Teoksen niteet</h1>
     <?php
     // Tarkistetaan, että GET-parametrit ovat olemassa
@@ -74,6 +76,8 @@ require_once __DIR__ . '/../functions/functions.php';
     }
     ?>
     <p><a href="home.php">Takaisin hakutuloksiin</a></p>
-    <p><a href="checkout.php">Ostoskori</a></p>
+    <a href="checkout.php" class="shopping-cart">Ostoskori</a>
+    <a href="logout.php" class="logout-link">Kirjaudu ulos</a>
+    </div>
 </body>
 </html>

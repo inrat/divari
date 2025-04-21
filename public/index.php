@@ -4,8 +4,10 @@
 <html>
 <head>
     <title>Keskusdivari - Kirjautuminen</title>
+    <link rel="stylesheet" href="style3.css">
 </head>
 <body>
+    <div class="container">
     <h2>Kirjaudu sisään</h2>
     <?php 
     // Näytetään mahdollinen rekisteröinti-ilmoitus
@@ -23,5 +25,6 @@
         <button type="submit">Kirjaudu</button>
     </form>
     <p>Eikö sinulla ole tiliä? <a href="register.php">Rekisteröidy tästä</a></p>
+    </div>
 </body>
 </html>
