@@ -43,6 +43,11 @@ body {
     text-align: center;
   }  
 
+  .error {
+    color: red;
+    font-weight: bold;
+}
+
 h1, h2, h3 {
     color: #4a4e69;
     margin-bottom: 20px;
