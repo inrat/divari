@@ -20,7 +20,9 @@ INSERT INTO asiakas (nimi, osoite, email, salasana, puhelinnumero)
 VALUES ('Jessie Churchill', '9208 Back', 'belva369@yahoo.com', 'microsoft','123465');
 
 INSERT INTO divarit (nimi, osoite, salasana)
-VALUES ('Hodgson Divari', '8345 Rhine Avenue', '000000');
+VALUES ('Keskusdivari', 'Pirkankatu 2, '000000');
+INSERT INTO divarit (nimi, osoite, salasana)
+VALUES ('Lassen lehti', 'Kanslerinrinne 1', 'lasse');
 INSERT INTO divarit (nimi, osoite, salasana)
 VALUES ('Fischer-Beals Divari', '2482 Calder Circle', 'claudia');
 INSERT INTO divarit (nimi, osoite, salasana)
@@ -100,6 +102,18 @@ INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
 VALUES ('Johanna Sinisalo', 'Ennen päivänlaskua ei voi', '9789513187673', '2000', 'romaani', 'fantasia');
 INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
 VALUES ('Leena Krohn', 'Tainaron', '9789513187680', '1985', 'romaani', 'fantasia');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Madeleine Brent', 'Elektran tytär', '9155430674', '1986', 'romaani', 'romantiikka');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Madeleine Brent', 'Tuulentavoittelijan morsian', '9156381451', '1978', 'romaani', 'romantiikka');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Mika Waltari', 'Turms kuolematon', '9789513187690', '1995', 'romaani', 'historia');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Mika Waltari', 'Komisario Palmun erehdys', '9789513187706', '1940', 'romaani', 'dekkari');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Shelton Gilbert', 'Friikkilän pojat Mexicossa', '9789513187713', '1989', 'sarjakuva', 'huumori');
+INSERT INTO teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+VALUES ('Dale Carnegie', 'Miten saan ystäviä, menestystä, vaikutusvaltaa', '9789510396230', '1939', 'tietokirja', 'opas');
 
 INSERT INTO postikulut (max_paino, hinta)
 VALUES ('50', '2.50');
