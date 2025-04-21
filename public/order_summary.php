@@ -46,47 +46,50 @@ $_SESSION['tilaustiedot'] = [
 <head>
     <meta charset="UTF-8">
     <title>Tilaus – Yhteenveto</title>
+    <link rel="stylesheet" href="style3.css">
 </head>
 <body>
-    <h1>Tilaus – Yhteenveto</h1>
+    <div class='container'>
+        <h1>Tilaus – Yhteenveto</h1>
 
-    <table border="1" cellpadding="8" cellspacing="0">
-        <tr>
-            <th>Tekijä</th>
-            <th>Teos</th>
-            <th>Hinta</th>
-            <th>Divari</th>
-        </tr>
-        <?php foreach ($_SESSION['cart'] as $item): ?>
+        <table border="1" cellpadding="8" cellspacing="0">
             <tr>
-                <td><?= htmlspecialchars($item['tekija']) ?></td>
-                <td><?= htmlspecialchars($item['nimi']) ?></td>
-                <td><?= htmlspecialchars($item['hinta']) ?> €</td>
-                <td><?= htmlspecialchars($item['divari']) ?></td>
+                <th>Tekijä</th>
+                <th>Teos</th>
+                <th>Hinta</th>
+                <th>Divari</th>
             </tr>
-        <?php endforeach; ?>
-    </table>
+            <?php foreach ($_SESSION['cart'] as $item): ?>
+                <tr>
+                    <td><?= htmlspecialchars($item['tekija']) ?></td>
+                    <td><?= htmlspecialchars($item['nimi']) ?></td>
+                    <td><?= htmlspecialchars($item['hinta']) ?> €</td>
+                    <td><?= htmlspecialchars($item['divari']) ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
 
-    <p><strong>Yhteensä:</strong> <?= number_format($yhteensa, 2) ?> €</p>
-    <p><strong>Kokonaispaino:</strong> <?= $kokonaispaino ?> g</p>
-    <p><strong>Postikulut:</strong> <?= number_format($postikulu, 2) ?> €</p>
-    <p><strong>Lopullinen summa:</strong> <?= number_format($kokonaissumma, 2) ?> €</p>
+        <p><strong>Yhteensä:</strong> <?= number_format($yhteensa, 2) ?> €</p>
+        <p><strong>Kokonaispaino:</strong> <?= $kokonaispaino ?> g</p>
+        <p><strong>Postikulut:</strong> <?= number_format($postikulu, 2) ?> €</p>
+        <p><strong>Lopullinen summa:</strong> <?= number_format($kokonaissumma, 2) ?> €</p>
 
-    <?php if ($asiakas): ?>
-        <h2>Asiakastiedot</h2>
-        <p><strong>Nimi:</strong> <?= htmlspecialchars($asiakas['nimi']) ?></p>
-        <p><strong>Osoite:</strong> <?= htmlspecialchars($asiakas['osoite']) ?></p>
-        <p><strong>Sähköposti:</strong> <?= htmlspecialchars($asiakas['email']) ?></p>
-        <p><strong>Puhelinnumero:</strong> <?= htmlspecialchars($asiakas['puhelinnumero']) ?></p>
-    <?php else: ?>
-        <p><em>Asiakastietoja ei löytynyt.</em></p>
-    <?php endif; ?>
+        <?php if ($asiakas): ?>
+            <h2>Asiakastiedot</h2>
+            <p><strong>Nimi:</strong> <?= htmlspecialchars($asiakas['nimi']) ?></p>
+            <p><strong>Osoite:</strong> <?= htmlspecialchars($asiakas['osoite']) ?></p>
+            <p><strong>Sähköposti:</strong> <?= htmlspecialchars($asiakas['email']) ?></p>
+            <p><strong>Puhelinnumero:</strong> <?= htmlspecialchars($asiakas['puhelinnumero']) ?></p>
+        <?php else: ?>
+            <p><em>Asiakastietoja ei löytynyt.</em></p>
+        <?php endif; ?>
 
-    <form action="check_order.php" method="POST" style="margin-top: 20px;">
-        <button type="submit">Vahvista ja maksa tilaus</button>
-    </form>
+        <form action="check_order.php" method="POST" style="margin-top: 20px;">
+            <button type="submit">Vahvista ja maksa tilaus</button>
+        </form>
 
-    <p><a href="checkout.php">Palaa takaisin ostoskoriin</a></p>
+        <p><a href="checkout.php">Palaa takaisin ostoskoriin</a></p>
+    </div>
 </body>
 </html>
 

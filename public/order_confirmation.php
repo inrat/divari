@@ -17,6 +17,7 @@ if (!$tilaus || !is_array($tilaus['tuotteet'] ?? null)) {
 <head>
     <meta charset="UTF-8">
     <title>Tilausvahvistus</title>
+    <link rel="stylesheet" href="style3.css">
 </head>
 <body>
     <h1>Kiitos tilauksestasi!</h1>
