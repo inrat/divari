@@ -38,7 +38,7 @@ if (pg_num_rows($result) > 0) {
         echo "<tr>
                 <td>{$row['nide_id']}</td>
                 <td>
-                    <a href=\"./teos.php?id={$row['teos_id']}\">
+                    <a href=\"./search.php?id={$row['teos_id']}\">
                         <div style=\"height:100%;width:100%\">
                            " . htmlspecialchars($row['teos_nimi'] ?: 'Tuntematon teos') . "
                         </div>
