@@ -4,6 +4,9 @@ session_start();
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../functions/functions.php';
 
+$divari_id = $_SESSION['divari_id'] ?? null;
+$schema_name = $divari_id ? 'divari_' . $divari_id : 'public';
+
 // Jos ostoskori on tyhjä, ohjataan takaisin kassalle
 if (empty($_SESSION['cart'])) {
     header('Location: checkout.php');
@@ -21,7 +24,7 @@ if (isset($_SESSION['asiakas_id'])) {
 }
 
 // Lasketaan postikulut ja kokonaispaino
-$posti = laske_postikulut($_SESSION['cart'], $db);
+$posti = laske_postikulut($_SESSION['cart'], $db, $schema_name);
 $postikulu = $posti['hinta'];
 $kokonaispaino = $posti['paino'];
 

@@ -4,6 +4,9 @@ session_start();
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../functions/functions.php';
 
+$divari_id = $_SESSION['divari_id'] ?? null;
+$schema_name = $divari_id ? 'divari_' . $divari_id : 'public';
+
 // Varmistetaan, että ostoskori on alustettu
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
@@ -26,7 +29,7 @@ if (!$nide_id) {
 $sql_check = "
     SELECT tila FROM public.nide WHERE nide_id = $1
     UNION
-    SELECT tila FROM lassen_lehti.nide WHERE nide_id = $1
+    SELECT tila FROM {$schema_name}.nide WHERE nide_id = $1
 ";
 $result_check = pg_query_params($db, $sql_check, [$nide_id]);
 if ($result_check) {

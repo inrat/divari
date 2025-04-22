@@ -1,21 +1,10 @@
 <?php
-// Ladataan tietokantayhteyden konfiguraatiot (mm. $db-muuttuja)
 require_once __DIR__ . '/../config/config.php';
 
-/**
- * Hakee kirjoja annetulla hakusanalla.
- * Haku suoritetaan kahdesta eri skeemasta: lassen_lehti ja public (Gallein Galle).
- * Palauttaa kirjojen perustiedot, jos ne vastaavat hakukriteeriä.
- *
- * @param string $query Hakusana (esim. kirjailijan nimi, teoksen nimi, luokka tai tyyppi)
- * @param resource $db PostgreSQL-tietokantayhteys
- * @return array Palauttaa löydetyt teokset assosiatiivisena taulukkona
- */
-function hae_kirjat($query, $db) {
+function hae_kirjat($query, $db, $schema_name) {
     $query = trim($query);
 
     if ($query === '') {
-        // Ei hakusanaa → haetaan kaikki teokset molemmista lähteistä
         $sql = "
             SELECT DISTINCT t.tekija, t.nimi, t.tyyppi, t.luokka, t.isbn
             FROM public.teokset t
@@ -24,29 +13,29 @@ function hae_kirjat($query, $db) {
             UNION
 
             SELECT DISTINCT t.tekija, t.nimi, t.tyyppi, t.luokka, t.isbn
-            FROM lassen_lehti.teokset t
-            LEFT JOIN lassen_lehti.nide n ON t.teos_id = n.teos_id
+            FROM {$schema_name}.teokset t
+            LEFT JOIN {$schema_name}.nide n ON t.teos_id = n.teos_id
         ";
     } else {
-        // Hakusana → etsitään molemmista teostietokannoista, niteitä ei rajoiteta
+        $safe_query = pg_escape_string($db, $query);
         $sql = "
             SELECT DISTINCT t.tekija, t.nimi, t.tyyppi, t.luokka, t.isbn
             FROM public.teokset t
             LEFT JOIN public.nide n ON t.teos_id = n.teos_id
-            WHERE LOWER(t.tekija) LIKE LOWER('%$query%')
-               OR LOWER(t.nimi) LIKE LOWER('%$query%')
-               OR LOWER(t.tyyppi) LIKE LOWER('%$query%')
-               OR LOWER(t.luokka) LIKE LOWER('%$query%')
+            WHERE LOWER(t.tekija) LIKE LOWER('%{$safe_query}%')
+               OR LOWER(t.nimi) LIKE LOWER('%{$safe_query}%')
+               OR LOWER(t.tyyppi) LIKE LOWER('%{$safe_query}%')
+               OR LOWER(t.luokka) LIKE LOWER('%{$safe_query}%')
 
             UNION
 
             SELECT DISTINCT t.tekija, t.nimi, t.tyyppi, t.luokka, t.isbn
-            FROM lassen_lehti.teokset t
-            LEFT JOIN lassen_lehti.nide n ON t.teos_id = n.teos_id
-            WHERE LOWER(t.tekija) LIKE LOWER('%$query%')
-               OR LOWER(t.nimi) LIKE LOWER('%$query%')
-               OR LOWER(t.tyyppi) LIKE LOWER('%$query%')
-               OR LOWER(t.luokka) LIKE LOWER('%$query%')
+            FROM {$schema_name}.teokset t
+            LEFT JOIN {$schema_name}.nide n ON t.teos_id = n.teos_id
+            WHERE LOWER(t.tekija) LIKE LOWER('%{$safe_query}%')
+               OR LOWER(t.nimi) LIKE LOWER('%{$safe_query}%')
+               OR LOWER(t.tyyppi) LIKE LOWER('%{$safe_query}%')
+               OR LOWER(t.luokka) LIKE LOWER('%{$safe_query}%')
         ";
     }
 
@@ -58,19 +47,11 @@ function hae_kirjat($query, $db) {
     return pg_fetch_all($result) ?: [];
 }
 
-/**
- * Hakee kaikki käytetyt teostyypit tietokannasta.
- * Haku suoritetaan kahdesta eri skeemasta: public (Gallein Galle) ja lassen_lehti.
- * Palauttaa uniikit tyyppi-arvot merkkijonoina, joita voidaan käyttää esimerkiksi suodatusvalikossa.
- *
- * @param resource $db PostgreSQL-tietokantayhteys
- * @return array Palauttaa tyyppi-arvot yksinkertaisena merkkijonotaulukkona
- */
-function hae_tyypit($db) {
+function hae_tyypit($db, $schema_name) {
     $sql = "
         SELECT DISTINCT tyyppi FROM public.teokset
         UNION
-        SELECT DISTINCT tyyppi FROM lassen_lehti.teokset
+        SELECT DISTINCT tyyppi FROM {$schema_name}.teokset
     ";
     $result = pg_query($db, $sql);
     if (!$result) {
@@ -87,19 +68,13 @@ function hae_tyypit($db) {
     return $tyypit;
 }
 
-/**
- * Hakee kaikki eri luokat tietokannasta yhdistettynä molemmista skeemoista
- *
- * @param resource $db Tietokantayhteys
- * @return array Palauttaa taulukon luokista (esim. ['romaani', 'historia'])
- */
-function hae_luokat($db) {
+function hae_luokat($db, $schema_name) {
     $luokat = [];
     $sql = "
         SELECT DISTINCT luokka FROM (
             SELECT luokka FROM public.teokset
             UNION
-            SELECT luokka FROM lassen_lehti.teokset
+            SELECT luokka FROM {$schema_name}.teokset
         ) AS yhdistetty
         WHERE luokka IS NOT NULL
         ORDER BY luokka;
@@ -115,22 +90,14 @@ function hae_luokat($db) {
     return $luokat;
 }
 
-/**
- * Hakee tietyn teoksen kaikki niteet (fyysiset kappaleet) kahdesta skeemasta.
- *
- * @param string $tekija Teoksen tekijän nimi (täsmällinen)
- * @param string $nimi Teoksen nimi (täsmällinen)
- * @param resource $db PostgreSQL-tietokantayhteys
- * @return array Palauttaa niteet assosiatiivisena taulukkona
- */
-function hae_kirja_niteet($tekija, $nimi, $db) {
+function hae_kirja_niteet($tekija, $nimi, $db, $schema_name) {
     $sql = "
         SELECT t.tekija, t.nimi, t.tyyppi, t.luokka, t.isbn,
                n.hinta, n.tila, d.nimi AS divari_nimi, n.nide_id AS nide_id
         FROM 
-            lassen_lehti.teokset t
+            {$schema_name}.teokset t
         JOIN 
-            lassen_lehti.nide n ON t.teos_id = n.teos_id
+            {$schema_name}.nide n ON t.teos_id = n.teos_id
         JOIN 
             public.divarit d ON n.divari_id = d.divari_id
         WHERE LOWER(t.tekija) = LOWER($1)
@@ -150,48 +117,31 @@ function hae_kirja_niteet($tekija, $nimi, $db) {
           AND LOWER(t.nimi) = LOWER($2)
     ";
 
-    // Parametrisoitu kysely suojaa SQL-injektiolta
     $result = pg_query_params($db, $sql, [$tekija, $nimi]);
 
     if (!$result) {
         die("Virhe SQL-haussa: " . pg_last_error($db));
     }
 
-    return pg_fetch_all($result) ?: []; // Palautetaan niteet tai tyhjä taulukko
+    return pg_fetch_all($result) ?: [];
 }
 
-/**
- * Päivittää yksittäisen niteen tilan "varatuksi".
- * Tätä käytetään kun käyttäjä lisää niteen ostoskoriin.
- *
- * @param int $nide_id Niteen yksilöllinen tunniste (primary key)
- * @param resource $db PostgreSQL-tietokantayhteys
- * @return bool Palauttaa true jos päivitys onnistui, false jos epäonnistui
- */
 function varaa_nide($nide_id, $db) {
     $sql = "UPDATE public.nide SET tila = 'varattu' WHERE nide_id = $1";
     $result = pg_query_params($db, $sql, [$nide_id]);
     return ($result !== false);
 }
 
-/**
- * Laskee ostoskorin kokonaispainon ja hakee oikean postikulun
- *
- * @param array $cart Ostoskorin sisältö
- * @param resource $db Tietokantayhteys
- * @return array ['paino' => int, 'hinta' => float, 'postikulu_id' => int|null]
- */
-function laske_postikulut($cart, $db) {
+function laske_postikulut($cart, $db, $schema_name) {
     $kokonais_paino = 0;
 
-    // Lasketaan kaikkien tuotteiden yhteispaino
     foreach ($cart as $item) {
         $nide_id = $item['nide_id'];
 
         $sql = "
             SELECT paino FROM public.nide WHERE nide_id = $1
             UNION
-            SELECT paino FROM lassen_lehti.nide WHERE nide_id = $1
+            SELECT paino FROM {$schema_name}.nide WHERE nide_id = $1
             LIMIT 1
         ";
         $result = pg_query_params($db, $sql, [$nide_id]);
@@ -200,7 +150,6 @@ function laske_postikulut($cart, $db) {
         }
     }
 
-    // Haetaan postikulurivi, jonka max_paino kattaa yhteispainon
     $sql_posti = "
         SELECT postikulu_id, hinta 
         FROM postikulut 
@@ -219,12 +168,10 @@ function laske_postikulut($cart, $db) {
         ];
     }
 
-    // Jos ei löytynyt mitään postikuluriviä, palautetaan nollat
     return [
         'paino' => $kokonais_paino,
         'hinta' => 0.00,
         'postikulu_id' => null
     ];
 }
-
 ?>
