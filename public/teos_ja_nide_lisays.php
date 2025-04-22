@@ -28,13 +28,21 @@ if (isset($_SESSION['message'])) {
 // Määritellään kirjautunut divari
 $divari_id = $_SESSION['divari_id'];
 
-// Haetaan kirjautuneen divarin niteet
-$query = "SELECT n.*, t.nimi AS teos_nimi 
-          FROM nide n
-          LEFT JOIN teokset t ON n.teos_id = t.teos_id
-          WHERE n.divari_id = $1";
-          
-$result = pg_query_params($db, $query, [$divari_id]);
+// jos kirjautuneena keskusdivari
+if (isset($_SESSION['divari_id']) && $_SESSION['divari_id'] == 1) {
+	$query = "SELECT n.*, t.nimi AS teos_nimi 
+          	  FROM nide n
+          	  LEFT JOIN teokset t ON n.teos_id = t.teos_id";
+        $result = pg_query($db, $query);
+	
+} else  {
+    // Haetaan kirjautuneen divarin niteet
+    $query = "SELECT n.*, t.nimi AS teos_nimi 
+              FROM nide n
+              LEFT JOIN teokset t ON n.teos_id = t.teos_id
+              WHERE n.divari_id = $1";
+    $result = pg_query_params($db, $query, [$divari_id]);
+}
 
 // Jos niteitä on, tulostetaan ne taulukkona
 if (pg_num_rows($result) > 0) {
