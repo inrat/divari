@@ -1,6 +1,16 @@
 <?php
 session_start();
 require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../functions/functions.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $divari_id = $_SESSION['divari_id'];
+    synkronoi_niteet_divariin($db, $divari_id);
+    $_SESSION['message'] = "Niteet synkronoitu onnistuneesti.";
+    header("Location: admin_synkronointi.php");
+    exit();
+}
+
 if (!isset($_SESSION['divari_id'])) {
     echo "Et ole kirjautunut sisään.";
     echo "<a href=\"admin_login_popup.php\"> t&auml;st&auml;.</a>";
@@ -51,26 +61,18 @@ try {
         pg_result_seek($private_teokset_query, 0);
     }
 
-    $public_teokset_query = pg_query($db, 
-    "SELECT * FROM public.teokset ORDER BY teos_id ASC");
-    
+    $public_teokset_query = pg_query_params($db, 
+        "SELECT DISTINCT t.* FROM public.teokset t 
+         JOIN public.nide n ON t.teos_id = n.teos_id 
+         WHERE n.divari_id = $1 
+         ORDER BY t.teos_id ASC", 
+        array($divari_id));
     if (!$public_teokset_query) {
         $public_teokset_data = [];
         $public_teokset_query = null;
     } else {
         $public_teokset_data = pg_fetch_all($public_teokset_query) ?: [];
         pg_result_seek($public_teokset_query, 0);
-    }
-
-    // TÄHÄN LISÄTÄÄN TEOS_ID -> NIMI HAKEMISTOT
-    $private_teokset_map = [];
-    foreach ($private_teokset_data as $teos) {
-    $private_teokset_map[$teos['teos_id']] = $teos['nimi'];
-    }
-
-    $public_teokset_map = [];
-    foreach ($public_teokset_data as $teos) {
-    $public_teokset_map[$teos['teos_id']] = $teos['nimi'];
     }
     
 } catch (Exception $e) {
@@ -80,8 +82,6 @@ try {
 
 // FUnktio, jolla luodaan nide-taulut
 function render_nide_table($result, $title, $comparison_data = null) {
-    global $private_teokset_map, $public_teokset_map; // TÄRKEÄ
-
     echo "<h2>$title</h2>";
     echo "<table border='1' cellpadding='5' class='result-table'>";
     echo "<tr>
@@ -102,31 +102,34 @@ function render_nide_table($result, $title, $comparison_data = null) {
             // Luodaan muuttujat synkronoinnin tarkistukselle: löytyykö toisesta taulusta?
             $status = "Synkronoitu";
             $row_class = "";
-
+            
             if ($comparison_data) {
                 $found = false;
-
-            // Hae teoksen nimi private ja public mapista
-            $nimi_oma = isset($private_teokset_map[$row['teos_id']]) ? $private_teokset_map[$row['teos_id']] : null;
-
-            foreach ($comparison_data as $comp_row) {
-                $nimi_verrattava = isset($public_teokset_map[$comp_row['teos_id']]) ? $public_teokset_map[$comp_row['teos_id']] : null;
-
-            if (
-                $nimi_oma && $nimi_verrattava &&
-                mb_strtolower(trim($nimi_oma)) === mb_strtolower(trim($nimi_verrattava))
-            ) {
-                $found = true;
-                break;
+                foreach ($comparison_data as $comp_row) {
+                    // Käytetään tarkistukseen nide_id:tä
+                    if ($row['nide_id'] == $comp_row['nide_id']) {
+                        $found = true;
+                        // Tarkistetaan eroavatko ID:t.
+                        $different = false;
+                        foreach ($row as $key => $value) {
+                            if ($key != 'divari_id' && isset($comp_row[$key]) && $value != $comp_row[$key]) {
+                                $different = true;
+                                break;
+                            }
+                        }
+                        if ($different) {
+                            $status = "Eroaa";
+                            $row_class = "class='different'";
+                        }
+                        break;
+                    }
+                }
+                
+                if (!$found) {
+                    $status = "Puuttuu toisesta";
+                    $row_class = "class='missing'";
+                }
             }
-        }
-
-    if (!$found) {
-        $status = "Puuttuu toisesta";
-        $row_class = "class='missing'";
-    }
-}
-
             
             echo "<tr $row_class>";
             echo "<td>" . htmlspecialchars($row['nide_id'] ?? 'N/A') . "</td>";
@@ -276,13 +279,6 @@ function render_teokset_table($result, $title, $comparison_data = null) {
         tr.missing {
             background-color: #ffdddd;
         }
-
-        .container {
-            max-width: 1000px;
-            margin: auto;
-            padding: 20px;
-            background-color: white; /* valkoinen tausta */
-        }
     </style>
 </head>
 <body>
@@ -308,6 +304,12 @@ function render_teokset_table($result, $title, $comparison_data = null) {
             
             <?php render_nide_table($private_nide_query, "Oma skeema ({$schema_name}) - Nide", $public_nide_data); ?>
             <?php render_nide_table($public_nide_query, "Keskustietokanta (public) - Nide", $private_nide_data); ?>
+
+            <!-- Synkronointinappi -->
+            <form method="POST">
+                <button type="submit">Synkronoi niteet skeemaan</button>
+            </form>
+        
         </div>
         
         <div class="section">

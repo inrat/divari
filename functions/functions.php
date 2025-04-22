@@ -1,6 +1,25 @@
 <?php
 require_once __DIR__ . '/../config/config.php';
 
+function synkronoi_niteet_divariin($db, $divari_id) {
+    $skeema = "divari_" . intval($divari_id);
+
+    $insert_query = "
+        INSERT INTO {$skeema}.nide (nide_id, teos_id, divari_id, tila, hinta, sisaanostohinta, paino)
+        OVERRIDING SYSTEM VALUE
+        SELECT nide_id, teos_id, divari_id, tila, hinta, sisaanostohinta, paino
+        FROM public.nide
+        WHERE divari_id = $1
+        ON CONFLICT (nide_id) DO UPDATE
+        SET tila = EXCLUDED.tila,
+            hinta = EXCLUDED.hinta,
+            sisaanostohinta = EXCLUDED.sisaanostohinta,
+            paino = EXCLUDED.paino
+        "; 
+    
+    pg_query_params($db, $insert_query, [$divari_id]);
+}
+
 function hae_kirjat($query, $db, $schema_name) {
     $query = trim($query);
 
