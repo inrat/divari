@@ -9,6 +9,7 @@
 <body>
     <div class="container">
     <?php if (isset($_SESSION['nimi'])): ?>
+
         <a href="logout.php" class="logout-link">Kirjaudu ulos</a>
         <h1>Hei, <?php echo $_SESSION['nimi']; $_SESSION['divari_id'] ?>!</h1>
         <a href="teos_ja_nide_lisays.php" class="button">Lis&auml;&auml; ja tarkastele omia niteit&auml;</a>
