@@ -1,10 +1,10 @@
 Ohjeet osatietokannan eli Lassen Lehti muodostamiseen:
 
-CREATE SCHEMA lassen_lehti;
+CREATE SCHEMA divari_2;
 
-SET search_path TO lassen_lehti;
+SET search_path TO divari_2;
 
-CREATE TABLE lassen_lehti.teokset (
+CREATE TABLE divari_2.teokset (
      teos_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
      tekija VARCHAR(255) NOT NULL,
      nimi VARCHAR(255) NOT NULL,
@@ -14,9 +14,9 @@ CREATE TABLE lassen_lehti.teokset (
      luokka VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE lassen_lehti.nide (
+CREATE TABLE divari_2.nide (
     nide_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    teos_id INT NOT NULL REFERENCES lassen_lehti.teokset(teos_id),  -- Viittaa teokset-tauluun lassen_lehti-skeemassa
+    teos_id INT NOT NULL REFERENCES divari_2.teokset(teos_id),  -- Viittaa teokset-tauluun divari_2-skeemassa
     divari_id INT NOT NULL REFERENCES public.divarit(divari_id),  -- Viittaa public-divarit-tauluun
     tila VARCHAR(10) NOT NULL CHECK (tila IN ('myynnissä', 'varattu', 'myyty')),
     hinta NUMERIC(10, 2) CHECK (hinta >= 0),
@@ -27,10 +27,10 @@ CREATE TABLE lassen_lehti.nide (
 -----------------------------------------------------
 Tarkista muodostuivatko taulut tietokantaan:
 
-\dt lassen_lehti.*
+\dt divari_2.*
 
 -----------------------------------------------------
-Lisää Lassen Lehti divarit tauluun:
+Lisää Lassen Lehti divarit tauluun jos ei ole siellä vielä:
 
 INSERT INTO public.divarit (nimi, osoite, salasana)
 VALUES ('Lassen Lehti', 'Keskuskatu 10, 00100 Helsinki', 'Lasse');
@@ -38,10 +38,10 @@ VALUES ('Lassen Lehti', 'Keskuskatu 10, 00100 Helsinki', 'Lasse');
 -------------------------------------------------------
 Lisää tietokantaan kirja:
 
-INSERT INTO lassen_lehti.teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
+INSERT INTO divari_2.teokset (tekija, nimi, isbn, julkaisuvuosi, tyyppi, luokka)
 VALUES ('Madeleine Brent', 'Elektran tytär', '9155430674', '1986', 'romantiikka', 'romaani');
 
-INSERT INTO lassen_lehti.nide (teos_id, divari_id, tila, hinta, sisaanostohinta, paino)
+INSERT INTO divari_2.nide (teos_id, divari_id, tila, hinta, sisaanostohinta, paino)
 VALUES (1, 2, 'myynnissä', 12.50, 8.00, 500);
 
 

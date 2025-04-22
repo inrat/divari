@@ -25,9 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result1 = pg_query_params($db, $query1, [$teos_id, $divari_id, $hinta, $sisaanostohinta, $paino]);
         
         if ($result1) {
-            $_SESSION['message'] = "Nide li&auml;tty onnistuneesti!";
+            $_SESSION['message'] = "Nide tallennettu onnistuneesti!";
         } else {
-            $_SESSION['message'] = "Virhe niteen lis&auml;&auml;misess&auml;.";
+            $_SESSION['message'] = "Virhe niteen tallennuksessa.";
         }
 
     } catch (Exception $e) {
