@@ -144,11 +144,23 @@ VALUES (2, '2025-03-27 14:00:00');
 INSERT INTO tilaus (asiakas_id, tilauspvm)
 VALUES (3, '2025-03-26 13:45:00');
 INSERT INTO tilaus (asiakas_id, tilauspvm)
-VALUES (4, '2025-03-25 12:30:00');
+VALUES (4, '2024-03-25 12:30:00');
 INSERT INTO tilaus (asiakas_id, tilauspvm)
-VALUES (5, '2025-03-24 11:15:00');
+VALUES (5, '2024-03-24 11:15:00');
 INSERT INTO tilaus (asiakas_id, tilauspvm)
-VALUES (6, '2025-03-23 10:00:00');
+VALUES (6, '2024-03-23 10:00:00');
+INSERT INTO tilaus (asiakas_id, tilauspvm)
+VALUES (1, '2024-03-28 15:30:00');
+INSERT INTO tilaus (asiakas_id, tilauspvm)
+VALUES (1, '2024-01-02 14:00:00');
+INSERT INTO tilaus (asiakas_id, tilauspvm)
+VALUES (1, '2024-05-23 13:45:00');
+INSERT INTO tilaus (asiakas_id, tilauspvm)
+VALUES (2, '2024-03-25 12:30:00');
+INSERT INTO tilaus (asiakas_id, tilauspvm)
+VALUES (2, '2024-03-24 11:15:00');
+INSERT INTO tilaus (asiakas_id, tilauspvm)
+VALUES (2, '2024-03-23 10:00:00');
 
 INSERT INTO tilatut_tuotteet (tilaus_id, nide_id)
 VALUES (1, 1);
