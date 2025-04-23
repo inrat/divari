@@ -32,7 +32,7 @@ foreach ($cart as $item) {
 
     // Päivitetään tila
     pg_query_params($db, "UPDATE public.nide SET tila = 'myyty' WHERE nide_id = $1", [$nide_id]);
-    pg_query_params($db, "UPDATE lassen_lehti.nide SET tila = 'myyty' WHERE nide_id = $1", [$nide_id]);
+    pg_query_params($db, "UPDATE {$schema_name}.nide SET tila = 'myyty' WHERE nide_id = $1", [$nide_id]);
 }
 
 // Liitetään tilaukseen käytetty postikulu

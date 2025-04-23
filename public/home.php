@@ -1,8 +1,10 @@
-<!-- home.php -->
 <?php
 session_start();
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../functions/functions.php';
+
+$divari_id = $_SESSION['divari_id'] ?? null;
+$schema_name = $divari_id ? 'divari_' . $divari_id : 'public'; // Oletetaan public jos ei määritelty
 ?>
 <!DOCTYPE html>
 <html>
@@ -15,7 +17,7 @@ require_once __DIR__ . '/../functions/functions.php';
     <!-- Ostoskori-painike -->
     <a href="checkout.php" class="shopping-cart">Ostoskori</a>
     
-    <!-- Kirjaudu ulos -painike, sama CSS-luokka mutta eri top-arvo -->
+    <!-- Kirjaudu ulos -painike -->
     <a href="logout.php" class="logout-link">Kirjaudu ulos</a>
 
     <h1>Tervetuloa Keskusdivariin</h1>
@@ -26,11 +28,12 @@ require_once __DIR__ . '/../functions/functions.php';
         <!-- Luokkasuodatin -->
         <?php
         $valittu_luokka = $_GET['luokka'] ?? '';
-        $luokat = hae_luokat($db);
+
+        // Tämä hakee luokat, nyt tallennetaan se muuttujiin
+        $luokat = hae_luokat($db, $schema_name);
 
         $valittu_tyyppi = $_GET['tyyppi'] ?? '';
-        $tyypit = hae_tyypit($db);
-
+        $tyypit = hae_tyypit($db, $schema_name);
         ?>
 
         <select name="luokka">
@@ -53,7 +56,6 @@ require_once __DIR__ . '/../functions/functions.php';
             <?php endforeach; ?>
         </select>
 
-
         <button type="submit">Hae</button>
     </form>
 
@@ -63,40 +65,39 @@ require_once __DIR__ . '/../functions/functions.php';
             $luokka = $_GET['luokka'] ?? '';
             $tyyppi = $_GET['tyyppi'] ?? '';
 
-            
-            $results = hae_kirjat($query, $db);
+            $results = hae_kirjat($query, $db, $schema_name);
 
-                if ($luokka !== '') {
-                    $results = array_filter($results, function($book) use ($luokka) {
-                        return strtolower($book['luokka']) === strtolower($luokka);
-                    });
-                }
-                if ($tyyppi !== '') {
-                    $results = array_filter($results, function($book) use ($tyyppi) {
-                        return strtolower($book['tyyppi']) === strtolower($tyyppi);
-                    });
-                }
-                
+            if ($luokka !== '') {
+                $results = array_filter($results, function($book) use ($luokka) {
+                    return strtolower($book['luokka']) === strtolower($luokka);
+                });
+            }
+            if ($tyyppi !== '') {
+                $results = array_filter($results, function($book) use ($tyyppi) {
+                    return strtolower($book['tyyppi']) === strtolower($tyyppi);
+                });
+            }
+
             // Järjestä nimen mukaan aakkosjärjestykseen
             usort($results, function($a, $b) {
                 return strcasecmp($a['nimi'], $b['nimi']);
             });
-            
-                if ($results) {
-                    echo "<h3>Hakutulokset:</h3>";
-                    foreach ($results as $book) {
-                        echo "<div class='result-item'>";
-                        echo "<a href='search.php?tekija=" . urlencode($book['tekija']) . "&nimi=" . urlencode($book['nimi']) . "'>";
-                        echo "<strong>" . htmlspecialchars($book['nimi']) . "</strong>";
-                        echo "</a><br>";
-                        echo "Tekijä: " . htmlspecialchars($book['tekija']) . "<br>";
-                        echo "Tyyppi: " . htmlspecialchars($book['tyyppi']) . "<br>";
-                        echo "Luokka: " . htmlspecialchars($book['luokka']) . "<br>";
-                        echo "</div>";
-                    }
-                } else {
-                    echo "<p>Ei tuloksia annetulla haulla.</p>";
-                }    
+
+            if ($results) {
+                echo "<h3>Hakutulokset:</h3>";
+                foreach ($results as $book) {
+                    echo "<div class='result-item'>";
+                    echo "<a href='search.php?tekija=" . urlencode($book['tekija']) . "&nimi=" . urlencode($book['nimi']) . "'>";
+                    echo "<strong>" . htmlspecialchars($book['nimi']) . "</strong>";
+                    echo "</a><br>";
+                    echo "Tekijä: " . htmlspecialchars($book['tekija']) . "<br>";
+                    echo "Tyyppi: " . htmlspecialchars($book['tyyppi']) . "<br>";
+                    echo "Luokka: " . htmlspecialchars($book['luokka']) . "<br>";
+                    echo "</div>";
+                }
+            } else {
+                echo "<p>Ei tuloksia annetulla haulla.</p>";
+            }    
         ?>
     </div>
 </body>

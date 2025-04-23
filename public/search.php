@@ -1,8 +1,11 @@
-<!-- search.php -->
 <?php
 session_start();
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../functions/functions.php';
+
+// Lisää tämä:
+$divari_id = $_SESSION['divari_id'] ?? null;
+$schema_name = $divari_id ? 'divari_' . $divari_id : 'public';
 ?>
 <!DOCTYPE html>
 <html>
@@ -25,38 +28,35 @@ require_once __DIR__ . '/../functions/functions.php';
         // Tarkistetaan haetaanko teosta ID:n perusteella.
         $id = $_GET['id'];
         
-        // SQL-kysely tietojen hakuun.
         $sql = "SELECT t.*, n.*, d.nimi as divari_nimi
-        FROM teokset t
-        LEFT JOIN nide n ON t.teos_id = n.teos_id
-        LEFT JOIN divarit d ON n.divari_id = d.divari_id
+        FROM public.teokset t
+        LEFT JOIN public.nide n ON t.teos_id = n.teos_id
+        LEFT JOIN public.divarit d ON n.divari_id = d.divari_id
         WHERE t.teos_id = $1";
  
         $result = pg_query_params($db, $sql, [$id]);
         $results = pg_fetch_all($result);
     }
-    // Tarkistetaan, että GET-parametrit ovat olemassa
     elseif (isset($_GET['tekija']) && isset($_GET['nimi'])) {
         $tekija = $_GET['tekija'];
         $nimi   = $_GET['nimi'];
 
-        // Haetaan kirjan ja sen niteiden tiedot
-        $results = hae_kirja_niteet($tekija, $nimi, $db);
+        // Päivitetty: Lisätään $schema_name funktiokutsuun
+        $results = hae_kirja_niteet($tekija, $nimi, $db, $schema_name);
     } 
-    if ($results) {
-            // Näytetään ensimmäisestä rivistä teoksen perustiedot
+    ?>
+    <?php if ($results): ?>
+        <?php
             $first = $results[0];
             echo "<h2> Teos: " . htmlspecialchars($first['nimi']) . "</h2>";
             echo "<p>Tekijä: " . htmlspecialchars($first['tekija']) . "</p>";
             echo "<p>Tyyppi: " . htmlspecialchars($first['tyyppi']) . "</p>";
             echo "<p>Luokka: " . htmlspecialchars($first['luokka']) . "</p>";
 
-            // Näytetään ISBN vain, jos se on ei-tyhjä
             if (!empty($first['isbn'])) {
                 echo "<p>ISBN: " . htmlspecialchars($first['isbn']) . "</p>";
             }
 
-            // Listataan kaikki niteet (jokainen rivi results-taulukosta)
             echo "<h3>Niteet:</h3>";
 
             $has_copies = false;
@@ -68,12 +68,8 @@ require_once __DIR__ . '/../functions/functions.php';
                     echo "Tila: " . htmlspecialchars($copy['tila']) . "<br>";
                     echo "Divari: " . htmlspecialchars($copy['divari_nimi']) . "<br>";
 
-                    // Ostoskoriin lisäämislomake
                     echo "<form action='cart.php' method='POST' style='margin-top: 10px;'>";
-                    // Varmistetaan, että nide_id on olemassa
-                    if(isset($copy['nide_id'])) {
-                        echo "<input type='hidden' name='nide_id' value='" . htmlspecialchars($copy['nide_id']) . "'>";
-                    }
+                    echo "<input type='hidden' name='nide_id' value='" . htmlspecialchars($copy['nide_id']) . "'>";
                     echo "<input type='hidden' name='hinta' value='" . htmlspecialchars($copy['hinta']) . "'>";
                     echo "<input type='hidden' name='tila' value='" . htmlspecialchars($copy['tila']) . "'>";
                     echo "<input type='hidden' name='divari' value='" . htmlspecialchars($copy['divari_nimi']) . "'>";
@@ -89,15 +85,13 @@ require_once __DIR__ . '/../functions/functions.php';
             if (!$has_copies) {
                 echo "<p> Tälle teokselle ei tällä hetkellä ole niteitä saatavilla. </p>"; 
             }
-        // Näytetään jos annetut parametrit ovat vääriä.
-        } elseif (isset($_GET['id']) || (isset($_GET['tekija']) && isset($_GET['nimi']))) {
-            echo "<p>Teoksesta ei löytynyt niteitä ei löytynyt.</p>";
-        }
-        else {
-            // Jos parametrit puuttuvat, ilmoitetaan asiasta
-            echo "<p>Teosta ei ole valittuna.</p>";
-    }
-    ?>
+        ?>
+    <?php elseif (isset($_GET['id']) || (isset($_GET['tekija']) && isset($_GET['nimi']))): ?>
+        <p>Teoksesta ei löytynyt niteitä ei löytynyt.</p>
+    <?php else: ?>
+        <p>Teosta ei ole valittuna.</p>
+    <?php endif; ?>
+
     <p><a href="home.php">Takaisin hakutuloksiin</a></p>
     <a href="checkout.php" class="shopping-cart">Ostoskori</a>
     <a href="logout.php" class="logout-link">Kirjaudu ulos</a>

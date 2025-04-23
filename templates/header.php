@@ -1,1 +1,0 @@
-// yhteinen yläpalkki HTML-sivuille, jos tarvii

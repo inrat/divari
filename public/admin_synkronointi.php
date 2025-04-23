@@ -1,6 +1,16 @@
 <?php
 session_start();
 require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../functions/functions.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $divari_id = $_SESSION['divari_id'];
+    synkronoi_niteet_divariin($db, $divari_id);
+    $_SESSION['message'] = "Niteet synkronoitu onnistuneesti.";
+    header("Location: admin_synkronointi.php");
+    exit();
+}
+
 if (!isset($_SESSION['divari_id'])) {
     echo "Et ole kirjautunut sisään.";
     echo "<a href=\"admin_login_popup.php\"> t&auml;st&auml;.</a>";
@@ -294,6 +304,12 @@ function render_teokset_table($result, $title, $comparison_data = null) {
             
             <?php render_nide_table($private_nide_query, "Oma skeema ({$schema_name}) - Nide", $public_nide_data); ?>
             <?php render_nide_table($public_nide_query, "Keskustietokanta (public) - Nide", $private_nide_data); ?>
+
+            <!-- Synkronointinappi -->
+            <form method="POST">
+                <button type="submit">Synkronoi niteet skeemaan</button>
+            </form>
+        
         </div>
         
         <div class="section">
