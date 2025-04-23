@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/config.php';
 
+// Synkronoi niteet public-skeemasta divarin skeemaan
 function synkronoi_niteet_divariin($db, $divari_id) {
     $skeema = "divari_" . intval($divari_id);
 
@@ -20,6 +21,7 @@ function synkronoi_niteet_divariin($db, $divari_id) {
     pg_query_params($db, $insert_query, [$divari_id]);
 }
 
+// Hakee kirjoja hakusanan tai ilman
 function hae_kirjat($query, $db, $schema_name) {
     $query = trim($query);
 
@@ -66,6 +68,7 @@ function hae_kirjat($query, $db, $schema_name) {
     return pg_fetch_all($result) ?: [];
 }
 
+// Hakee tyyppitiedot
 function hae_tyypit($db, $schema_name) {
     $sql = "
         SELECT DISTINCT tyyppi FROM public.teokset
@@ -87,6 +90,7 @@ function hae_tyypit($db, $schema_name) {
     return $tyypit;
 }
 
+// Hakee luokat
 function hae_luokat($db, $schema_name) {
     $luokat = [];
     $sql = "
@@ -109,6 +113,7 @@ function hae_luokat($db, $schema_name) {
     return $luokat;
 }
 
+// Hakee tietyn kirjan niteet eri divareista
 function hae_kirja_niteet($tekija, $nimi, $db, $schema_name) {
     $sql = "
         SELECT t.tekija, t.nimi, t.tyyppi, t.luokka, t.isbn,
@@ -145,6 +150,7 @@ function hae_kirja_niteet($tekija, $nimi, $db, $schema_name) {
     return pg_fetch_all($result) ?: [];
 }
 
+// Merkitsee niteen varatuksi
 function varaa_nide($nide_id, $db) {
     $sql = "UPDATE public.nide SET tila = 'varattu' WHERE nide_id = $1";
     $result = pg_query_params($db, $sql, [$nide_id]);

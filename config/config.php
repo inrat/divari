@@ -1,4 +1,5 @@
 <?php
+// Luo tietokantayhteyden, jos sitä ei ole vielä määritelty
 if (!isset($db)) {
     $y_tiedot = "dbname=hcmape user=hcmape password=salasana_tulee_syottaa";
     $db = pg_connect($y_tiedot);

@@ -28,7 +28,6 @@ $schema_name = $divari_id ? 'divari_' . $divari_id : 'public';
         // Tarkistetaan haetaanko teosta ID:n perusteella.
         $id = $_GET['id'];
         
-        // Päivitä SQL, jos käytät skeemoja tässä
         $sql = "SELECT t.*, n.*, d.nimi as divari_nimi
         FROM public.teokset t
         LEFT JOIN public.nide n ON t.teos_id = n.teos_id
