@@ -87,3 +87,7 @@ Keskusdivarin (Divarin ID 1) ylläpitäjänä laajemmat oikeudet:
 
 Osatietokannan omaavan (Divarin ID 2) ylläpitäjän laajemmat oikeudet:
 - Voi tarkastella oman osatietokannan ja keskustietokannan välistä synkronoinnin tilaa
+- Synkronoida niteet painikkeesta, jos keskusdivarin ja osatietokannan välillä on eroavaisuuksia. Synkronointi toimii kuitenkin vain yhteen suuntaan.
+    - Esimerkki 1: Kun ylläpitäjä lisää uuden niteen, se päivittyy vain keskustietokantaan. Synkronoi -    toiminto lisää niteen myös osatietokantaan.
+    - Esimerkki 2: Kun asiakas ostaa niteen, tila muuttuu ’myyty’ vain keskustietokantaan. Synkronoi -toiminto muuttaa niteen tilaan ’myyty’ myös osatietokantaan.
+- Teoksien osalta synkronointinäkymässä, voi lähinnä tarkastella mistä teoksista löytyy niteitä osatietokannasta.
